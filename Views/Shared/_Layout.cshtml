@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FitTrack</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS (CDN para prototipagem) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuração do Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Estilos Customizados Globais -->
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        
+        /* Scrollbar customizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .glass-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-sans">
+    
+    <!-- Navbar -->
+    <nav class="border-b border-slate-700 bg-slate-900/95 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center gap-2 no-underline">
+                        <i class="fa-solid fa-bolt text-emerald-500 text-2xl"></i>
+                        <span class="font-bold text-xl tracking-tight text-white">Fit<span class="text-emerald-500">Track</span></span>
+                    </a>
+                </div>
+                
+                <!-- Links de Navegação (Desktop) -->
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-400">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="text-white hover:text-emerald-400 transition">Início</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="hover:text-white transition">Privacidade</a>
+                    <a href="#" class="hover:text-white transition">Histórico</a>
+                </div>
+
+                <!-- Perfil / Ações -->
+                <div class="flex items-center gap-4">
+                    <button class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-lg shadow-emerald-500/20 hidden sm:block">
+                        <i class="fa-solid fa-plus mr-1"></i> Add Treino
+                    </button>
+                    <div class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center border border-slate-600 cursor-pointer">
+                        <i class="fa-solid fa-user text-slate-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main role="main" class="flex-grow w-full">
+        <!-- O RenderBody injeta o conteúdo das Views aqui -->
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-6 mt-8 bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            &copy; 2025 - FitTrack - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-emerald-500 hover:underline">Privacidade</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Removido o Bootstrap JS pois estamos usando Tailwind/Custom JS, mas você pode manter se tiver dependência -->
+    <!-- <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

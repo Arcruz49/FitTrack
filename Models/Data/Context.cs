@@ -1,0 +1,24 @@
+using Microsoft.EntityFrameworkCore;
+using FitTrack.Models;
+
+namespace FitTrack.Data
+{
+    public class Context : DbContext
+    {
+        public Context(DbContextOptions<Context> options) : base(options) { }
+
+        public DbSet<Users> Users { get; set; }
+        public DbSet<Profiles> Profiles { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Users>()
+                .Property(u => u.creation_date)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            modelBuilder.Entity<Profiles>()
+                .Property(u => u.creation_date)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        }
+    }
+}
