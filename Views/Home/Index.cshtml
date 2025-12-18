@@ -165,7 +165,7 @@
                     <form id="addForm" class="space-y-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Exercício</label>
-                            <select id="selExercicio" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+                            <select id="name-add" name="name-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
                                 <option>Selecione um exercício</option>
                                 <option>Supino Reto</option>
                                 <option>Supino Inclinado</option>
@@ -178,28 +178,28 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Peso (kg)</label>
-                                <input type="number" id="inpPeso" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 50">
+                                <input type="number" id="weight-add" name="weight-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 50">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Repetições</label>
-                                <input type="number" id="inpReps" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 12">
+                                <input type="number" id="reps-add" name="reps-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 12">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Séries</label>
-                                <input type="number" id="inpSeries" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 3">
+                                <input type="number" id="series-add" name="series-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 3">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Descanso (min)</label>
-                                <input type="number" id="inpRest" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 2">
+                                <input type="number" id="rest-add" name="rest-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 2">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Observações (opcional)</label>
-                            <textarea class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition h-20 resize-none" placeholder="Fiz com ajuda no último set..."></textarea>
+                            <textarea id="obs-add" name="obs-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition h-20 resize-none" placeholder="Fiz com ajuda no último set..."></textarea>
                         </div>
 
                         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-emerald-900/50 transition duration-200 flex justify-center items-center gap-2">
@@ -265,34 +265,61 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Animação de entrada
+            
             $("<style>.animate-entry { animation: slideDown 0.4s ease-out forwards; } @@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }</style>").appendTo("head");
 
             $('#addForm').on('submit', function(e) {
+                debugger
                 e.preventDefault();
-                let exercicio = $('#selExercicio').val();
-                let peso = $('#inpPeso').val();
-                let reps = $('#inpReps').val();
+                let name = $('#name-add').val();
+                let weight = $('#weight-add').val();
+                let reps = $('#reps-add').val();
+                let series = $('#series-add').val();
+                let rest = $('#rest-add').val();
+                let obs = $('#obs-add').val();
 
-                if(exercicio === "Selecione..." || !peso) return alert("Preencha os dados!");
 
-                let html = `
-                    <div class="animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4">
-                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
-                        <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                            <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700"><i class="fa-solid fa-dumbbell"></i></div>
-                            <div><h3 class="font-bold text-white text-lg">${exercicio}</h3><p class="text-sm text-slate-400">3 séries • ${reps} repetições</p></div>
-                        </div>
-                        <div class="flex items-center gap-6">
-                            <span class="block text-2xl font-bold text-emerald-400">${peso} <span class="text-sm text-slate-500">kg</span></span>
-                            <button class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>`;
+                $.ajax({
+                    url: '/Home/CreateExercise',
+                    type: 'POST',
+                    data: {
+                        name: name,
+                        weight: weight,
+                        reps: reps,
+                        series: series,
+                        rest: rest,
+                        obs: obs,
+                        @* order: order, *@
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            let html = `
+                                <div class="animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4">
+                                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+                                    <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
+                                        <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700"><i class="fa-solid fa-dumbbell"></i></div>
+                                        <div><h3 class="font-bold text-white text-lg">${exercicio}</h3><p class="text-sm text-slate-400">3 séries • ${reps} repetições</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-6">
+                                        <span class="block text-2xl font-bold text-emerald-400">${peso} <span class="text-sm text-slate-500">kg</span></span>
+                                        <button class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>`;
+                            
+                            $('#workoutList').prepend(html);
+                            let count = parseInt($('#totalExercises').text()) + 1;
+                            $('#totalExercises').text(count);
+                            this.reset();
+                        } else {
+                            alert(response.message); 
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Ocorreu um erro ao registrar: ' + error);
+                    }
+                });
+
                 
-                $('#workoutList').prepend(html);
-                let count = parseInt($('#totalExercises').text()) + 1;
-                $('#totalExercises').text(count);
-                this.reset();
             });
 
             $(document).on('click', '.delete-btn', function() {

@@ -9,14 +9,17 @@ namespace FitTrack.Data
 
         public DbSet<Users> Users { get; set; }
         public DbSet<Profiles> Profiles { get; set; }
+        public DbSet<Exercises> Exercises { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Users>()
                 .Property(u => u.creation_date)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
             modelBuilder.Entity<Profiles>()
+                .Property(u => u.creation_date)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            modelBuilder.Entity<Exercises>()
                 .Property(u => u.creation_date)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
         }
