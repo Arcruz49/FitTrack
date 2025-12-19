@@ -60,8 +60,36 @@ public class HomeController : Controller
             db.Exercises.Add(exercise);
             db.SaveChanges();
 
-            return Json(new {success = true, message = "Exercício criado com sucesso."});
+            return Json(new {success = true, message = "Exercício criado com sucesso.", data = exercise});
 
+        }
+        catch(Exception ex)
+        {
+            return Json(new {success = false, message = util.ErrorMessage(ex)});
+        }
+    }
+
+    [Authorize]
+    [HttpGet]
+    public JsonResult GetExercises()
+    {
+        try
+        {
+            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+            
+            var exercicios = db.Exercises.Where(a => a.userId == userId)
+            .Select(a => new
+            {
+                a.id,
+                a.name,
+                a.weight,
+                a.reps,
+                a.series,
+                a.creation_date,
+                a.order
+            }).ToList();
+
+            return Json(new {success = true, message = "", data = exercicios});
         }
         catch(Exception ex)
         {
