@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hbvpIL7QcbgP/zy6Eh4ghntIquNnMCvnyDaIPVHFdes=",
+  "Hash": "LBtEBHFcuJHQYKfT0dbjuBmSGHa9jeDiAx4q9TWCn6U=",
   "Source": "FitTrack",
   "BasePath": "_content/FitTrack",
   "Mode": "Default",
@@ -967,6 +967,44 @@
       "OriginalItemSpec": "wwwroot/lib/bootstrap/LICENSE"
     },
     {
+      "Identity": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/font-awesome/font-awesome-6.4.0-all.min.css",
+      "SourceId": "FitTrack",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/",
+      "BasePath": "_content/FitTrack",
+      "RelativePath": "lib/font-awesome/font-awesome-6.4.0-all.min.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/lib/font-awesome/font-awesome-6.4.0-all.min.css"
+    },
+    {
+      "Identity": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/google-fonts/googleFonts.css",
+      "SourceId": "FitTrack",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/",
+      "BasePath": "_content/FitTrack",
+      "RelativePath": "lib/google-fonts/googleFonts.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/lib/google-fonts/googleFonts.css"
+    },
+    {
       "Identity": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
       "SourceId": "FitTrack",
       "SourceType": "Discovered",
@@ -1193,6 +1231,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/lib/jquery/LICENSE.txt"
+    },
+    {
+      "Identity": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/tailwind/tailwind-3.4.17.js",
+      "SourceId": "FitTrack",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/",
+      "BasePath": "_content/FitTrack",
+      "RelativePath": "lib/tailwind/tailwind-3.4.17.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/lib/tailwind/tailwind-3.4.17.js"
     }
   ]
 }

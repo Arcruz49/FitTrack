@@ -2,329 +2,385 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<main class="flex-grow p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto w-full">
+<main class="flex-grow p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto w-full relative">
         
-        <!-- Cabeçalho de Boas Vindas -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-white">Olá, @ViewBag.userName</h1>
-            <p class="text-slate-400">Aqui está o resumo do seu treino de hoje.</p>
-        </div>
+    <!-- Cabeçalho -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-white">Olá, @ViewBag.userName</h1>
+        <p class="text-slate-400">Aqui está o resumo do seu treino de hoje.</p>
+    </div>
 
-        <!-- Grid de Estatísticas (KPIs) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <!-- Card 1 -->
-            <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
-                <span class="text-3xl font-bold text-emerald-400" id="totalExercises">4</span>
-                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Exercícios Hoje</span>
-            </div>
-            <!-- Card 2 -->
-            <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
-                <span class="text-3xl font-bold text-blue-400">3.2</span>
-                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Tonelagem (Ton)</span>
-            </div>
-            <!-- Card 3 -->
-            <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
-                <span class="text-3xl font-bold text-orange-400">28</span>
-                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Dias Consecutivos</span>
-            </div>
-            <!-- Card 4 -->
-            <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
-                <span class="text-3xl font-bold text-purple-400">+5.2%</span>
-                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Progresso Semanal</span>
-            </div>
+    <!-- Grid de Estatísticas (KPIs) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
+            <span class="text-3xl font-bold text-emerald-400" id="totalExercises">0</span>
+            <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Exercícios Hoje</span>
         </div>
+        <!-- Outros cards mantidos iguais... -->
+        <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
+            <span class="text-3xl font-bold text-blue-400">3.2</span>
+            <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Tonelagem (Ton)</span>
+        </div>
+        <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
+            <span class="text-3xl font-bold text-orange-400">28</span>
+            <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Dias Consecutivos</span>
+        </div>
+        <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
+            <span class="text-3xl font-bold text-purple-400">+5.2%</span>
+            <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Progresso Semanal</span>
+        </div>
+    </div>
 
-        <!-- Layout Principal: 2 Colunas (Esquerda Larga / Direita Estreita) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Layout Principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Coluna Esquerda -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="glass-card rounded-xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                    <h2 class="font-semibold text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-emerald-500"></i> Exercícios de Hoje
+                    </h2>
+                    <span id="date" class="text-xs bg-emerald-900/50 text-emerald-400 px-2 py-1 rounded border border-emerald-900">Data</span>
+                </div>
+                <div id="workoutList" class="p-6 space-y-4">
+                    <!-- Lista carregada via JS -->
+                </div>
+            </div>
             
-            <!-- Coluna Esquerda (Lista e Gráficos) - Ocupa 8 colunas -->
-            <div class="lg:col-span-8 space-y-6">
-                
-                <!-- Lista de Exercícios de Hoje -->
-                <div class="glass-card rounded-xl overflow-hidden">
-                    <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
-                        <h2 class="font-semibold text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-emerald-500"></i> Exercícios de Hoje
-                        </h2>
-                        <span class="text-xs bg-emerald-900/50 text-emerald-400 px-2 py-1 rounded border border-emerald-900">17 Dez 2025</span>
-                    </div>
-
-                    <div id="workoutList" class="p-6 space-y-4">
-                        
-                        <!-- Item 1 -->
-                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition">
-                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div> <!-- Borda Colorida Lateral -->
-                            
-                            <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                                <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700">
-                                    <i class="fa-solid fa-dumbbell"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-white text-lg">Supino Reto</h3>
-                                    <p class="text-sm text-slate-400">3 séries • 12 repetições • <span class="text-emerald-400 text-xs">+2kg</span></p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-6">
-                                <div class="text-right">
-                                    <span class="block text-2xl font-bold text-emerald-400">50 <span class="text-sm text-slate-500">kg</span></span>
-                                </div>
-                                <button class="text-slate-500 hover:text-white p-2 rounded-md hover:bg-slate-700 transition">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Item 2 -->
-                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition">
-                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
-                            
-                            <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                                <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-blue-500 border border-slate-700">
-                                    <i class="fa-solid fa-person-running"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-white text-lg">Agachamento Livre</h3>
-                                    <p class="text-sm text-slate-400">4 séries • 10 repetições • <span class="text-emerald-400 text-xs">+5kg</span></p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-6">
-                                <div class="text-right">
-                                    <span class="block text-2xl font-bold text-blue-400">80 <span class="text-sm text-slate-500">kg</span></span>
-                                </div>
-                                <button class="text-slate-500 hover:text-white p-2 rounded-md hover:bg-slate-700 transition">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Item 3 -->
-                        <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition">
-                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-purple-500"></div>
-                            
-                            <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                                <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-purple-500 border border-slate-700">
-                                    <i class="fa-solid fa-child-reaching"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-white text-lg">Leg Press</h3>
-                                    <p class="text-sm text-slate-400">4 séries • 12 repetições • <span class="text-yellow-500 text-xs">Mantido</span></p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-6">
-                                <div class="text-right">
-                                    <span class="block text-2xl font-bold text-purple-400">120 <span class="text-sm text-slate-500">kg</span></span>
-                                </div>
-                                <button class="text-slate-500 hover:text-white p-2 rounded-md hover:bg-slate-700 transition">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
+            <!-- Card de Progresso (Estático para exemplo) -->
+            <div class="glass-card rounded-xl p-6">
+                <h2 class="font-semibold text-lg flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-chart-line text-blue-500"></i> Progresso no Supino
+                </h2>
+                <div class="flex justify-between items-end mb-2">
+                    <div><p class="text-sm text-slate-400">Atual</p><p class="text-2xl font-bold text-white">52.5 kg</p></div>
+                    <div class="text-right"><p class="text-sm text-slate-400">Meta</p><p class="text-2xl font-bold text-white">60 kg</p></div>
                 </div>
-
-                <!-- Seção de Análise de Progresso -->
-                <div class="glass-card rounded-xl p-6">
-                    <h2 class="font-semibold text-lg flex items-center gap-2 mb-4">
-                        <i class="fa-solid fa-chart-line text-blue-500"></i> Progresso no Supino
-                    </h2>
-                    
-                    <div class="flex justify-between items-end mb-2">
-                        <div>
-                            <p class="text-sm text-slate-400">Peso Máximo Atual</p>
-                            <p class="text-2xl font-bold text-white">52.5 kg</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-sm text-slate-400">Meta</p>
-                            <p class="text-2xl font-bold text-white">60 kg</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Barra de Progresso Customizada -->
-                    <div class="w-full bg-slate-700 rounded-full h-4 relative overflow-hidden">
-                        <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-4 rounded-full" style="width: 87%;">
-                            <div class="w-full h-full opacity-30" style="background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent); background-size: 1rem 1rem;"></div>
-                        </div>
-                    </div>
-                    <p class="text-xs text-emerald-400 mt-2 font-medium">Você está +2.5kg acima da sua última semana. Continue assim!</p>
+                <div class="w-full bg-slate-700 rounded-full h-4 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-4 rounded-full" style="width: 87%;"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Coluna Direita (Formulário e Histórico) - Ocupa 4 colunas -->
-            <div class="lg:col-span-4 space-y-6">
+        <!-- Coluna Direita (Formulário ADD) -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="glass-card rounded-xl p-6 sticky top-24">
+                <h2 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-plus text-emerald-500"></i> Adicionar Exercício
+                </h2>
                 
-                <!-- Formulário "Adicionar Exercício" -->
-                <div class="glass-card rounded-xl p-6 sticky top-24">
-                    <h2 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-plus text-emerald-500"></i> Adicionar Exercício
-                    </h2>
+                <form id="addForm" class="space-y-4">
+                    <!-- Campos ID únicos para adição -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Exercício</label>
+                        <input type="text" id="name-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Peso (kg)</label>
+                            <input type="number" id="weight-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Reps</label>
+                            <input type="number" id="reps-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Séries</label>
+                            <input type="number" id="series-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Descanso</label>
+                            <input type="number" id="rest-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Observações</label>
+                        <textarea id="obs-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition h-20 resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-emerald-900/50 transition duration-200 flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-save"></i> Salvar
+                    </button>
+                </form>
+            </div>
+
+            <div class="glass-card rounded-xl p-6">
+                <h2 class="font-semibold text-lg text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-history text-slate-400"></i> Treinos Recentes
+                </h2>
+
+                <div class="space-y-4">
+                    <!-- Item Histórico 1 -->
+                    <div class="border-l-2 border-emerald-500 pl-4 py-1">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-white text-sm">Peito e Tríceps</h4>
+                            <span class="text-xs text-slate-500">Ontem</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Supino: 48 kg • 6 exercícios</p>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
+                            <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Item Histórico 2 -->
+                    <div class="border-l-2 border-blue-500 pl-4 py-1">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-white text-sm">Pernas</h4>
+                            <span class="text-xs text-slate-500">15 Dez</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Agachamento: 75 kg • 5 exercícios</p>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Item Histórico 3 -->
+                    <div class="border-l-2 border-purple-500 pl-4 py-1">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-white text-sm">Costas e Bíceps</h4>
+                            <span class="text-xs text-slate-500">13 Dez</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Barra Fixa: 70 kg • 7 exercícios</p>
+                        <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
+                            <div class="bg-purple-500 h-1.5 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="w-full mt-4 text-xs text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-700 p-2 rounded transition">
+                    Ver histórico completo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO (Fica escondido por padrão) -->
+    <div id="editModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" aria-hidden="true" id="modalBackdrop"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <!-- Conteúdo do Modal -->
+            <div class="relative inline-block align-bottom bg-slate-800 rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-slate-700">
+                <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-bold text-white mb-4 flex items-center gap-2" id="modal-title">
+                        <i class="fa-solid fa-pen-to-square text-blue-500"></i> Editar Exercício
+                    </h3>
                     
-                    <form id="addForm" class="space-y-4">
+                    <form id="editForm" class="space-y-4">
+                        <!-- ID Oculto -->
+                        <input type="hidden" id="edit-id" name="id">
+
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Exercício</label>
-                            <select id="name-add" name="name-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
-                                <option>Selecione um exercício</option>
-                                <option>Supino Reto</option>
-                                <option>Supino Inclinado</option>
-                                <option>Agachamento Livre</option>
-                                <option>Levantamento Terra</option>
-                                <option>Rosca Direta</option>
-                            </select>
+                            <input type="text" id="edit-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
-
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Peso (kg)</label>
-                                <input type="number" id="weight-add" name="weight-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 50">
+                                <input type="number" id="edit-weight" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-slate-400 mb-1">Repetições</label>
-                                <input type="number" id="reps-add" name="reps-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 12">
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Reps</label>
+                                <input type="number" id="edit-reps" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
                             </div>
                         </div>
-
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Séries</label>
-                                <input type="number" id="series-add" name="series-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 3">
+                                <input type="number" id="edit-series" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Descanso (min)</label>
-                                <input type="number" id="rest-add" name="rest-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: 2">
+                                <input type="number" id="edit-rest" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
                             </div>
                         </div>
-
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">Observações (opcional)</label>
-                            <textarea id="obs-add" name="obs-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition h-20 resize-none" placeholder="Fiz com ajuda no último set..."></textarea>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Observações</label>
+                            <textarea id="edit-obs" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500 transition h-20 resize-none"></textarea>
                         </div>
-
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-emerald-900/50 transition duration-200 flex justify-center items-center gap-2">
-                            <i class="fa-solid fa-save"></i> Salvar Exercício
-                        </button>
                     </form>
                 </div>
-
-                <!-- Treinos Recentes -->
-                <div class="glass-card rounded-xl p-6">
-                    <h2 class="font-semibold text-lg text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-history text-slate-400"></i> Treinos Recentes
-                    </h2>
-
-                    <div class="space-y-4">
-                        <!-- Item Histórico 1 -->
-                        <div class="border-l-2 border-emerald-500 pl-4 py-1">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-bold text-white text-sm">Peito e Tríceps</h4>
-                                <span class="text-xs text-slate-500">Ontem</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-1">Supino: 48 kg • 6 exercícios</p>
-                            <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
-                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 80%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Item Histórico 2 -->
-                        <div class="border-l-2 border-blue-500 pl-4 py-1">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-bold text-white text-sm">Pernas</h4>
-                                <span class="text-xs text-slate-500">15 Dez</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-1">Agachamento: 75 kg • 5 exercícios</p>
-                            <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
-                                <div class="bg-blue-500 h-1.5 rounded-full" style="width: 60%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Item Histórico 3 -->
-                        <div class="border-l-2 border-purple-500 pl-4 py-1">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-bold text-white text-sm">Costas e Bíceps</h4>
-                                <span class="text-xs text-slate-500">13 Dez</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-1">Barra Fixa: 70 kg • 7 exercícios</p>
-                            <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
-                                <div class="bg-purple-500 h-1.5 rounded-full" style="width: 90%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="w-full mt-4 text-xs text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-700 p-2 rounded transition">
-                        Ver histórico completo
+                <div class="bg-slate-800/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-slate-700 gap-2">
+                    <button type="button" id="btn-save-edit" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition">
+                        Salvar Alterações
+                    </button>
+                    <button type="button" id="btn-cancel-edit" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-600 shadow-sm px-4 py-2 bg-slate-700 text-base font-medium text-slate-300 hover:bg-slate-600 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition">
+                        Cancelar
                     </button>
                 </div>
-
+                
             </div>
         </div>
-    </main>
+    </div>
 
-<!-- Scripts Específicos desta página -->
+</main>
+
 @section Scripts {
     <script>
         $(document).ready(function() {
-            
-            $("<style>.animate-entry { animation: slideDown 0.4s ease-out forwards; } @@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }</style>").appendTo("head");
+            GetDataAtual();
             GetExercises();
+
             $('#addForm').on('submit', function(e) {
-                debugger
                 e.preventDefault();
-                let name = $('#name-add').val();
-                let weight = $('#weight-add').val();
-                let reps = $('#reps-add').val();
-                let series = $('#series-add').val();
-                let rest = $('#rest-add').val();
-                let obs = $('#obs-add').val();
-
-
+                 let formData = {
+                    name: $('#name-add').val(),
+                    weight: $('#weight-add').val(),
+                    reps: $('#reps-add').val(),
+                    series: $('#series-add').val(),
+                    rest: $('#rest-add').val(),
+                    obs: $('#obs-add').val()
+                };
+                
                 $.ajax({
                     url: '/Home/CreateExercise',
                     type: 'POST',
-                    data: {
-                        name: name,
-                        weight: weight,
-                        reps: reps,
-                        series: series,
-                        rest: rest,
-                        obs: obs,
-                        @* order: order, *@
-                    },
+                    data: formData,
                     success: function(response) {
                         if (response.success) {
-                            let html = `
-                                <div class="animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4">
-                                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
-                                    <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                                        <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700"><i class="fa-solid fa-dumbbell"></i></div>
-                                        <div><h3 class="font-bold text-white text-lg">${response.data.name}</h3><p class="text-sm text-slate-400">${response.data.series} séries • ${response.data.reps} repetições</p></div>
-                                    </div>
-                                    <div class="flex items-center gap-6">
-                                        <span class="block text-2xl font-bold text-emerald-400">${response.data.weight} <span class="text-sm text-slate-500">kg</span></span>
-                                        <button class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition"><i class="fa-solid fa-trash-can"></i></button>
-                                    </div>
-                                </div>`;
-                            
-                            $('#workoutList').prepend(html);
-                            let count = parseInt($('#totalExercises').text()) + 1;
-                            $('#totalExercises').text(count);
-                            this.reset();
-                        } else {
-                            alert(response.message); 
-                        }
+                             GetExercises(); // Recarrega a lista
+                             $('#addForm')[0].reset();
+                        } else { alert(response.message); }
                     },
-                    error: function(xhr, status, error) {
-                        alert('Ocorreu um erro ao registrar: ' + error);
-                    }
+                    error: function(xhr) { alert('Erro ao criar: ' + xhr.responseText); }
                 });
+            });
 
+            // === 2. Excluir Exercício ===
+            $(document).on('click', '.delete-btn', function() {
+                // Adicione sua lógica AJAX de delete aqui se tiver endpoint
+                // Exemplo visual:
+            });
+
+            $(document).on('click', '.edit-btn', function() {
+
+                $('#edit-id').val('');
+                $('#edit-name').val('');
+                $('#edit-weight').val('');
+                $('#edit-reps').val('');
+                $('#edit-series').val('');
+                $('#edit-rest').val('');
+                $('#edit-obs').val('');
+
+                $.ajax({
+                    url: '/Home/GetExercicioById',
+                    type: 'GET',
+                    data: { id: $(this).data('id') },
+                    success: function(response) {
+                        if (response.success) {
+                            let id = response.data.id;
+                            let name = response.data.name;
+                            let weight = response.data.weight;
+                            let reps = response.data.reps;
+                            let series = response.data.series;
+                            let rest = response.data.rest;
+                            let obs = response.data.obs;
+
+                            $('#edit-id').val(id);
+                            $('#edit-name').val(name);
+                            $('#edit-weight').val(weight);
+                            $('#edit-reps').val(reps);
+                            $('#edit-series').val(series);
+                            $('#edit-rest').val(rest);
+                            $('#edit-obs').val(obs);
+
+                            $('#editModal').removeClass('hidden').hide().fadeIn(200);
+
+
+                        } else { alert(response.message); }
+                    },
+                    error: function(xhr) { alert('Erro ao criar: ' + xhr.responseText); }
+                });
                 
             });
 
-            $(document).on('click', '.delete-btn', function() {
-                $(this).closest('.group').slideUp(300, function() { $(this).remove(); });
+            // === 4. Fechar Modal (Cancelar ou clicar fora) ===
+            function closeModal() {
+                $('#editModal').fadeOut(200, function() {
+                    $(this).addClass('hidden');
+                });
+            }
+
+            $('#btn-cancel-edit').on('click', closeModal);
+            
+            // Fechar ao clicar no backdrop (fundo escuro)
+            $('#modalBackdrop').on('click', closeModal);
+
+            // === 5. Salvar Edição ===
+            $('#btn-save-edit').on('click', function() {
+                let id = $('#edit-id').val();
+                let formData = {
+                    id: id,
+                    name: $('#edit-name').val(),
+                    weight: $('#edit-weight').val(),
+                    reps: $('#edit-reps').val(),
+                    series: $('#edit-series').val(),
+                    rest: $('#edit-rest').val(),
+                    obs: $('#edit-obs').val()
+                };
+
+                $.ajax({
+                    url: '/Home/UpdateExercise', // Certifique-se que este endpoint existe no Controller
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            closeModal();
+                            GetExercises(); // Atualiza a lista na tela
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Erro ao atualizar: ' + error);
+                    }
+                });
             });
+
+
+            $(document).on('click', '.delete-btn', function () {
+
+                const btn = $(this);
+                const id = btn.data('id');
+                const card = btn.closest('.animate-entry');
+
+                if (!confirm('Deseja realmente excluir este exercício?')) return;
+
+                card.css('pointer-events', 'none')
+                    .addClass('opacity-50');
+
+                $.ajax({
+                    url: '/Home/DeleteExerciseById',
+                    type: 'POST',
+                    data: { id },
+                    success: function (response) {
+                        if (response.success) {
+
+                            card.animate({
+                                opacity: 0,
+                                height: 0,
+                                margin: 0,
+                                padding: 0
+                            }, 300, function () {
+                                card.remove();
+                            });
+
+                        } else {
+                            alert(response.message);
+                            card.css('pointer-events', '').removeClass('opacity-50');
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('Erro ao deletar: ' + xhr.responseText);
+                        card.css('pointer-events', '').removeClass('opacity-50');
+                    }
+                });
+            });
+
         });
 
         function GetExercises() {
@@ -333,21 +389,30 @@
                 type: 'GET',
                 success: function (response) {
                     if (response.success) {
-
-                        $('#workoutList').html(''); // limpa antes
+                        $('#workoutList').empty();
+                        
+                        // Atualizar contador
+                        $('#totalExercises').text(response.data.length);
 
                         response.data.forEach(ex => {
+                            // Criação dos atributos data- para edição fácil
+                            let dataAttributes = `
+                                data-id="${ex.id}" 
+                                data-name="${ex.name}" 
+                                data-weight="${ex.weight}" 
+                                data-reps="${ex.reps}" 
+                                data-series="${ex.series}" 
+                                data-rest="${ex.rest}" 
+                                data-obs="${ex.obs || ''}"`;
 
                             let html = `
                                 <div class="animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4">
-                                    
                                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
 
                                     <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
                                         <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700">
                                             <i class="fa-solid fa-dumbbell"></i>
                                         </div>
-
                                         <div>
                                             <h3 class="font-bold text-white text-lg">${ex.name}</h3>
                                             <p class="text-sm text-slate-400">
@@ -356,34 +421,36 @@
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center gap-6">
-                                        <span class="block text-2xl font-bold text-emerald-400">
-                                            ${ex.weight ?? 0}
-                                            <span class="text-sm text-slate-500">kg</span>
+                                    <div class="flex items-center gap-4">
+                                        <span class="block text-2xl font-bold text-emerald-400 mr-2">
+                                            ${ex.weight ?? 0} <span class="text-sm text-slate-500">kg</span>
                                         </span>
+                                        
+                                        <button data-id = ${ex.id} class="edit-btn text-slate-500 hover:text-blue-400 p-2 rounded-md hover:bg-slate-700 transition">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
 
-                                        <button class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition"
-                                                data-id="${ex.id}">
+                                        <button data-id = ${ex.id} class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </div>
                                 </div>
                             `;
-
                             $('#workoutList').append(html);
                         });
-
-                        $('#totalExercises').text(response.data.length);
                     }
-                    else {
-                        alert(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Erro ao buscar exercícios: ' + error);
                 }
             });
         }
 
+        function GetDataAtual() {
+            const data = new Date();
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            $('#date').text(data.toLocaleDateString('pt-BR', options).replace('.',''));
+        }
     </script>
+    <style>
+        .animate-entry { animation: slideDown 0.4s ease-out forwards; }
+        @@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 }

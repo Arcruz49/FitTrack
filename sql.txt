@@ -1,0 +1,71 @@
+-- =========================
+-- SEGURANÇA PARA RODAR 1X
+-- =========================
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- =========================
+-- DATABASE
+-- =========================
+CREATE DATABASE IF NOT EXISTS dbFitTrack;
+USE dbFitTrack;
+
+-- =========================
+-- PROFILES
+-- =========================
+CREATE TABLE IF NOT EXISTS Profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    `type` VARCHAR(50) NOT NULL,
+    admin TINYINT(1) NOT NULL DEFAULT 0,
+    creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO Profiles (`type`, admin, creation_date)
+SELECT 'Admin', 1, '2025-12-18 00:33:44'
+WHERE NOT EXISTS (SELECT 1 FROM Profiles WHERE `type` = 'Admin');
+
+INSERT INTO Profiles (`type`, admin, creation_date)
+SELECT 'User', 0, '2025-12-18 00:33:44'
+WHERE NOT EXISTS (SELECT 1 FROM Profiles WHERE `type` = 'User');
+
+-- =========================
+-- USERS
+-- =========================
+CREATE TABLE IF NOT EXISTS Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(500) NOT NULL,
+    profileId INT NOT NULL,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_users_profiles
+        FOREIGN KEY (profileId)
+        REFERENCES Profiles(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- =========================
+-- EXERCISES
+-- =========================
+CREATE TABLE IF NOT EXISTS Exercises (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    name VARCHAR(500) NOT NULL,
+    weight DECIMAL(5,2),
+    reps INT,
+    series INT,
+    rest INT,
+    obs VARCHAR(500),
+
+    CONSTRAINT fk_exercises_users
+        FOREIGN KEY (userId)
+        REFERENCES Users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- =========================
+-- REATIVA FK
+-- =========================
+SET FOREIGN_KEY_CHECKS = 1;

@@ -67,7 +67,8 @@ public class LoginController : Controller
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.name),
                 new Claim("UserId", usuario.id.ToString()),
-                new Claim("Admin", (profile.admin ?? false).ToString())
+                new Claim("Admin", (profile.admin ?? false).ToString()),
+                new Claim("Email", usuario.email)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -163,7 +164,7 @@ public class LoginController : Controller
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return RedirectToAction("Login");
+        return RedirectToAction("Index", "Login");
     }
 
     

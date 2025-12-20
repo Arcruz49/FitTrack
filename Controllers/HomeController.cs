@@ -23,8 +23,14 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         string userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        string userEmail = User.FindFirst("Email")?.Value;
+        int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+
+        // var countExercise = db.Exercises.Where(a => a.userId == userId); 
+        // ViewBag.countExercise = userName;
 
         ViewBag.userName = userName;
+        ViewBag.userEmail = userEmail;
 
         return View();
     }
@@ -94,6 +100,71 @@ public class HomeController : Controller
         catch(Exception ex)
         {
             return Json(new {success = false, message = util.ErrorMessage(ex)});
+        }
+    }
+
+    [Authorize]
+    [HttpGet]
+    public JsonResult GetUserEmail()
+    {
+        try
+        {
+            return Json(new {success = true, data = User.FindFirst("Email")?.Value ?? ""});
+        }
+        catch(Exception ex)
+        {
+            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
+        }
+
+    }
+
+    [Authorize]
+    [HttpGet]
+    public JsonResult GetExercicioById(int id = 0)
+    {
+        try
+        {
+            if(id == 0) return Json(new {success = false, message = ""});
+
+            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+
+            var exercicio = db.Exercises
+                .Where(a => a.id == id && a.userId == userId)
+                .FirstOrDefault();
+
+            if(exercicio == null) return Json(new {success = false, message = "Exercício não encontrado", data = ""});
+
+            return Json(new {success = true, data = exercicio});
+        }
+        catch(Exception ex)
+        {
+            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
+        }
+
+    }
+
+    [Authorize]
+    [HttpPost]
+    public JsonResult DeleteExerciseById(int id = 0)
+    {
+        try
+        {
+            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+            var exercicio = db.Exercises
+                .Where(a => a.id == id && a.userId == userId)
+                .FirstOrDefault();
+
+            if(exercicio == null) return Json(new {success = false, message = "Exercício não encontrado", data = ""});
+            
+            db.Exercises.Remove(exercicio);
+            db.SaveChanges();
+
+            return Json(new {success = true, message = "Exercício excluído com sucesso", data = ""});
+
+        }
+        catch(Exception ex)
+        {
+            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
         }
     }
 

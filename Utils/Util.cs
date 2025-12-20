@@ -51,5 +51,12 @@ public class Util
         return 0;
     }
 
+    public string GetEmailLoggedUser(ClaimsPrincipal user)
+    {
+        var userEmail = user.Claims.FirstOrDefault(c => c.Type == "Email")?.Value;
+
+        return userEmail ?? "";
+    }
+
 
 }

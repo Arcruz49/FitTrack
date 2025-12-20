@@ -197,6 +197,14 @@
       "PackagePath": "staticwebassets/lib/bootstrap/dist/js/bootstrap.min.js.map"
     },
     {
+      "Id": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/font-awesome/font-awesome-6.4.0-all.min.css",
+      "PackagePath": "staticwebassets/lib/font-awesome/font-awesome-6.4.0-all.min.css"
+    },
+    {
+      "Id": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/google-fonts/googleFonts.css",
+      "PackagePath": "staticwebassets/lib/google-fonts/googleFonts.css"
+    },
+    {
       "Id": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt",
       "PackagePath": "staticwebassets/lib/jquery-validation-unobtrusive/LICENSE.txt"
     },
@@ -243,6 +251,10 @@
     {
       "Id": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/jquery/dist/jquery.min.map",
       "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
+    },
+    {
+      "Id": "/home/arthurcruz/Documents/Projetos/FitTrack/wwwroot/lib/tailwind/tailwind-3.4.17.js",
+      "PackagePath": "staticwebassets/lib/tailwind/tailwind-3.4.17.js"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.FitTrack.Microsoft.AspNetCore.StaticWebAssets.props",
