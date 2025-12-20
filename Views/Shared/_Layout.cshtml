@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "FitTrack";
+    ViewData["Title"] = "Home";
 }
 
 <!DOCTYPE html>
@@ -17,6 +17,9 @@
     
     <!-- Tailwind CSS -->
     <script src="~/lib/tailwind/tailwind-3.4.17.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
 
     <!-- Configuração do Tailwind -->
     <script>
@@ -127,8 +130,18 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+        <!-- IMPORTANTE: Bibliotecas necessárias para o Drag and Drop -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <!-- O Touch Punch faz o jQuery UI funcionar no celular (touch) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
     <script>
+
+        const notyf = new Notyf();
+
+        
         $(document).ready(function() {
             const $btn = $('#profile-btn');
             const $menu = $('#profile-menu');
@@ -151,6 +164,7 @@
             });
 
             getEmail();
+
         });
 
 

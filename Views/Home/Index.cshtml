@@ -154,14 +154,12 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO (Fica escondido por padrão) -->
     <div id="editModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <!-- Backdrop -->
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" aria-hidden="true" id="modalBackdrop"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             
-            <!-- Conteúdo do Modal -->
             <div class="relative inline-block align-bottom bg-slate-800 rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-slate-700">
                 <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <h3 class="text-lg leading-6 font-bold text-white mb-4 flex items-center gap-2" id="modal-title">
@@ -169,7 +167,6 @@
                     </h3>
                     
                     <form id="editForm" class="space-y-4">
-                        <!-- ID Oculto -->
                         <input type="hidden" id="edit-id" name="id">
 
                         <div>
@@ -218,8 +215,12 @@
 </main>
 
 @section Scripts {
+
+
     <script>
         $(document).ready(function() {
+            $("<style>.ui-state-highlight { height: 80px; background-color: rgba(16, 185, 129, 0.1); border: 2px dashed #10b981; border-radius: 0.75rem; margin-bottom: 1rem; }</style>").appendTo("head");
+
             GetDataAtual();
             GetExercises();
 
@@ -240,79 +241,49 @@
                     data: formData,
                     success: function(response) {
                         if (response.success) {
-                             GetExercises(); // Recarrega a lista
-                             $('#addForm')[0].reset();
-                        } else { alert(response.message); }
+                            notyf.success(response.message);
+                            GetExercises(); 
+                            $('#addForm')[0].reset();
+                        } 
+                        else
+                        {
+                            notyf.error(response.message);
+                        }
                     },
                     error: function(xhr) { alert('Erro ao criar: ' + xhr.responseText); }
                 });
             });
 
-            // === 2. Excluir Exercício ===
-            $(document).on('click', '.delete-btn', function() {
-                // Adicione sua lógica AJAX de delete aqui se tiver endpoint
-                // Exemplo visual:
-            });
-
             $(document).on('click', '.edit-btn', function() {
-
-                $('#edit-id').val('');
-                $('#edit-name').val('');
-                $('#edit-weight').val('');
-                $('#edit-reps').val('');
-                $('#edit-series').val('');
-                $('#edit-rest').val('');
-                $('#edit-obs').val('');
+                $('#editForm')[0].reset();
 
                 $.ajax({
-                    url: '/Home/GetExercicioById',
+                    url: '/Home/GetExercicioById', 
                     type: 'GET',
                     data: { id: $(this).data('id') },
                     success: function(response) {
                         if (response.success) {
-                            let id = response.data.id;
-                            let name = response.data.name;
-                            let weight = response.data.weight;
-                            let reps = response.data.reps;
-                            let series = response.data.series;
-                            let rest = response.data.rest;
-                            let obs = response.data.obs;
-
-                            $('#edit-id').val(id);
-                            $('#edit-name').val(name);
-                            $('#edit-weight').val(weight);
-                            $('#edit-reps').val(reps);
-                            $('#edit-series').val(series);
-                            $('#edit-rest').val(rest);
-                            $('#edit-obs').val(obs);
+                            $('#edit-id').val(response.data.id);
+                            $('#edit-name').val(response.data.name);
+                            $('#edit-weight').val(response.data.weight);
+                            $('#edit-reps').val(response.data.reps);
+                            $('#edit-series').val(response.data.series);
+                            $('#edit-rest').val(response.data.rest);
+                            $('#edit-obs').val(response.data.obs);
 
                             $('#editModal').removeClass('hidden').hide().fadeIn(200);
-
-
-                        } else { alert(response.message); }
+                            
+                        } else {                             
+                            notyf.error(response.message);
+                        }
                     },
-                    error: function(xhr) { alert('Erro ao criar: ' + xhr.responseText); }
+                    error: function(xhr) { alert('Erro ao buscar dados: ' + xhr.responseText); }
                 });
-                
             });
 
-            // === 4. Fechar Modal (Cancelar ou clicar fora) ===
-            function closeModal() {
-                $('#editModal').fadeOut(200, function() {
-                    $(this).addClass('hidden');
-                });
-            }
-
-            $('#btn-cancel-edit').on('click', closeModal);
-            
-            // Fechar ao clicar no backdrop (fundo escuro)
-            $('#modalBackdrop').on('click', closeModal);
-
-            // === 5. Salvar Edição ===
-            $('#btn-save-edit').on('click', function() {
-                let id = $('#edit-id').val();
-                let formData = {
-                    id: id,
+            $('#btn-save-edit').on('click', function () {
+                const exercise = {
+                    id: $('#edit-id').val(),
                     name: $('#edit-name').val(),
                     weight: $('#edit-weight').val(),
                     reps: $('#edit-reps').val(),
@@ -322,34 +293,34 @@
                 };
 
                 $.ajax({
-                    url: '/Home/UpdateExercise', // Certifique-se que este endpoint existe no Controller
+                    url: '/Home/EditExerciseById', 
                     type: 'POST',
-                    data: formData,
-                    success: function(response) {
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(exercise),
+                    success: function (response) {
                         if (response.success) {
                             closeModal();
-                            GetExercises(); // Atualiza a lista na tela
+                            GetExercises();
+                            notyf.success(response.message);
                         } else {
-                            alert(response.message);
+                            notyf.error(response.message);
+
                         }
                     },
-                    error: function(xhr, status, error) {
-                        alert('Erro ao atualizar: ' + error);
+                    error: function (xhr) {
+                        alert('Erro ao editar');
                     }
                 });
             });
 
-
             $(document).on('click', '.delete-btn', function () {
-
                 const btn = $(this);
                 const id = btn.data('id');
                 const card = btn.closest('.animate-entry');
 
                 if (!confirm('Deseja realmente excluir este exercício?')) return;
 
-                card.css('pointer-events', 'none')
-                    .addClass('opacity-50');
+                card.css('pointer-events', 'none').addClass('opacity-50');
 
                 $.ajax({
                     url: '/Home/DeleteExerciseById',
@@ -357,18 +328,14 @@
                     data: { id },
                     success: function (response) {
                         if (response.success) {
-
-                            card.animate({
-                                opacity: 0,
-                                height: 0,
-                                margin: 0,
-                                padding: 0
-                            }, 300, function () {
+                            card.animate({ opacity: 0, height: 0, margin: 0, padding: 0 }, 300, function () {
                                 card.remove();
+                                let count = parseInt($('#totalExercises').text()) - 1;
+                                $('#totalExercises').text(count > 0 ? count : 0);
                             });
-
+                            notyf.success(response.message);
                         } else {
-                            alert(response.message);
+                            notyf.error(response.message);
                             card.css('pointer-events', '').removeClass('opacity-50');
                         }
                     },
@@ -379,7 +346,9 @@
                 });
             });
 
+            $('#btn-cancel-edit, #modalBackdrop').on('click', closeModal);
         });
+
 
         function GetExercises() {
             $.ajax({
@@ -388,27 +357,29 @@
                 success: function (response) {
                     if (response.success) {
                         $('#workoutList').empty();
-                        
-                        // Atualizar contador
                         $('#totalExercises').text(response.data.length);
 
                         response.data.forEach(ex => {
-                            // Criação dos atributos data- para edição fácil
-                            let dataAttributes = `
-                                data-id="${ex.id}" 
-                                data-name="${ex.name}" 
-                                data-weight="${ex.weight}" 
-                                data-reps="${ex.reps}" 
-                                data-series="${ex.series}" 
-                                data-rest="${ex.rest}" 
-                                data-obs="${ex.obs || ''}"`;
+                            let dataAttributes = `data-id="${ex.id}"`; 
 
                             let html = `
-                                <div class="animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4">
+                                <!-- O data-id é fundamental para o Sortable saber quem é quem -->
+                                <div class="workout-item animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4" data-id="${ex.id}">
+                                    
                                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
 
                                     <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                                        <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700">
+                                        
+                                        <!-- Drag Handle (Maçaneta) -->
+                                        <div class="drag-handle cursor-move text-slate-600 hover:text-emerald-500 p-2 -ml-2 transition hidden sm:block">
+                                            <i class="fa-solid fa-grip-vertical"></i>
+                                        </div>
+                                        <!-- Versão Mobile (Icone Horizontal) -->
+                                        <div class="drag-handle cursor-move text-slate-600 hover:text-emerald-500 p-2 -ml-2 transition sm:hidden">
+                                            <i class="fa-solid fa-grip-lines"></i>
+                                        </div>
+
+                                        <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700 shrink-0">
                                             <i class="fa-solid fa-dumbbell"></i>
                                         </div>
                                         <div>
@@ -424,11 +395,11 @@
                                             ${ex.weight ?? 0} <span class="text-sm text-slate-500">kg</span>
                                         </span>
                                         
-                                        <button data-id = ${ex.id} class="edit-btn text-slate-500 hover:text-blue-400 p-2 rounded-md hover:bg-slate-700 transition">
+                                        <button ${dataAttributes} class="edit-btn text-slate-500 hover:text-blue-400 p-2 rounded-md hover:bg-slate-700 transition">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
 
-                                        <button data-id = ${ex.id} class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition">
+                                        <button data-id="${ex.id}" class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </div>
@@ -436,9 +407,66 @@
                             `;
                             $('#workoutList').append(html);
                         });
+
+
+                        InitSortable();
+                    }
+                    else{
+                        notyf.error(response.message);
+
                     }
                 }
             });
+        }
+
+        function InitSortable() {
+            if ($("#workoutList").data("ui-sortable")) {
+                $("#workoutList").sortable("destroy");
+            }
+
+            $("#workoutList").sortable({
+                handle: ".drag-handle", 
+                placeholder: "ui-state-highlight", 
+                axis: "y", 
+                opacity: 0.8,
+                update: function (event, ui) {
+                    SalvarNovaOrdem();
+                }
+            });
+        }
+
+        function SalvarNovaOrdem() {
+            var exercisesOrder = [];
+            
+            $("#workoutList .workout-item").each(function (index) {
+                var id = $(this).data('id');
+                exercisesOrder.push({ id: parseInt(id), order: index + 1 });
+            });
+
+            $.ajax({
+                url: '/Home/UpdateExerciseOrder',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(exercisesOrder),
+                success: function (response) {
+                    if (!response.success) {
+                        notyf.error(response.message);
+                        GetExercises(); 
+                    }
+                    else{
+                        @* notyf.success(response.message); *@
+
+                    }
+                    
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        function closeModal() {
+            $('#editModal').fadeOut(200, function() { $(this).addClass('hidden'); });
         }
 
         function GetDataAtual() {
@@ -447,8 +475,4 @@
             $('#date').text(data.toLocaleDateString('pt-BR', options).replace('.',''));
         }
     </script>
-    <style>
-        .animate-entry { animation: slideDown 0.4s ease-out forwards; }
-        @@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
 }

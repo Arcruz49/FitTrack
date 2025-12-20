@@ -6,6 +6,7 @@ using FitTrack.Data;
 using FitTrack.Utils;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using FitTrack.Models.Resources;
 
 namespace FitTrack.Controllers;
 
@@ -93,7 +94,7 @@ public class HomeController : Controller
                 a.series,
                 a.creation_date,
                 a.order
-            }).ToList();
+            }).OrderBy(a => a.order).ToList();
 
             return Json(new {success = true, message = "", data = exercicios});
         }
@@ -170,25 +171,93 @@ public class HomeController : Controller
 
     [Authorize]
     [HttpPost]
-    public JsonResult EditExerciseById(int id = 0)
+    public JsonResult EditExerciseById([FromBody] Exercises exerciseNew)
     {
         try
-          {
+        {
 
-	     int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
-             var exercicio = db.Exercises
-                .Where(a => a.id == id && a.userId == userId)
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim == null)
+                return Json(new { success = false, message = "Usuário não autenticado" });
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            #region  validacoes
+
+            if(exerciseNew.name == null || exerciseNew.name == "undefined" || exerciseNew.name == "")
+                return Json(new {success = false, message = "Nome inválido"});
+
+            if(exerciseNew.id == 0)
+                return Json(new {success = false, message = "Exercício inválido"});
+
+            #endregion
+
+
+            var exercicioOld = db.Exercises
+                .Where(a => a.id == exerciseNew.id && a.userId == userId)
                 .FirstOrDefault();
 
-             if(exercicio == null) return Json(new {success = false, message = "Exercício não enco>
-          return Json(new {success = true, message = "Exercício excluído com sucesso"});
+            if(exercicioOld == null) return Json(new {success = false, message = "Exercício não encontrado"});
+            
+            exercicioOld.name = exerciseNew.name;
+            exercicioOld.weight = exerciseNew.weight;
+            exercicioOld.reps = exerciseNew.reps;
+            exercicioOld.series = exerciseNew.series;
+            exercicioOld.obs = exerciseNew.obs;
+            exercicioOld.rest = exerciseNew.rest;
+
+            db.SaveChanges();
+            
+            return Json(new {success = true, message = "Exercício atualizado com sucesso"});
 
 
-	  }
-          catch(Exception ex)
-	  {
-	     return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
-	  }
+        }
+        catch(Exception ex)
+        {
+            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
+        }
 
     }  
+
+
+    [Authorize]
+    [HttpPost]
+    public JsonResult UpdateExerciseOrder([FromBody] List<ExerciseOrder> exercises)
+    {
+        try
+        {
+            if (exercises == null || exercises.Count == 0)
+                return Json(new { success = false, message = "Lista vazia" });
+
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim == null)
+                return Json(new { success = false, message = "Usuário não autenticado" });
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            var ids = exercises.Select(e => e.id).ToList();
+
+            var exerciciosDb = db.Exercises
+                .Where(e => ids.Contains(e.id) && e.userId == userId)
+                .ToList();
+
+            if (exerciciosDb.Count != exercises.Count)
+                return Json(new { success = false, message = "Exercício inválido ou sem permissão" });
+
+            foreach (var exercicio in exerciciosDb)
+            {
+                var newOrder = exercises.First(e => e.id == exercicio.id).order;
+                exercicio.order = newOrder;
+            }
+
+            db.SaveChanges();
+
+            return Json(new { success = true, message = "Ordem atualizada com sucesso" });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = util.ErrorMessage(ex) });
+        }
+    }
+
 }
