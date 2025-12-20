@@ -168,5 +168,27 @@ public class HomeController : Controller
         }
     }
 
-  
+    [Authorize]
+    [HttpPost]
+    public JsonResult EditExerciseById(int id = 0)
+    {
+        try
+          {
+
+	     int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+             var exercicio = db.Exercises
+                .Where(a => a.id == id && a.userId == userId)
+                .FirstOrDefault();
+
+             if(exercicio == null) return Json(new {success = false, message = "Exercício não enco>
+          return Json(new {success = true, message = "Exercício excluído com sucesso"});
+
+
+	  }
+          catch(Exception ex)
+	  {
+	     return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
+	  }
+
+    }  
 }
