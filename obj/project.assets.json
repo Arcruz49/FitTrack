@@ -1858,19 +1858,19 @@
     ]
   },
   "packageFolders": {
-    "/home/arthurcruz/.nuget/packages/": {}
+    "/home/arthur.cruz/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/arthurcruz/Documents/Projetos/FitTrack/FitTrack.csproj",
+      "projectUniqueName": "/home/arthur.cruz/Documents/Projetos/FitTrack/FitTrack.csproj",
       "projectName": "FitTrack",
-      "projectPath": "/home/arthurcruz/Documents/Projetos/FitTrack/FitTrack.csproj",
-      "packagesPath": "/home/arthurcruz/.nuget/packages/",
-      "outputPath": "/home/arthurcruz/Documents/Projetos/FitTrack/obj/",
+      "projectPath": "/home/arthur.cruz/Documents/Projetos/FitTrack/FitTrack.csproj",
+      "packagesPath": "/home/arthur.cruz/.nuget/packages/",
+      "outputPath": "/home/arthur.cruz/Documents/Projetos/FitTrack/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/arthurcruz/.nuget/NuGet/NuGet.Config"
+        "/home/arthur.cruz/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

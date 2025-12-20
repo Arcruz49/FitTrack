@@ -55,6 +55,8 @@ CREATE TABLE IF NOT EXISTS Exercises (
     series INT,
     rest INT,
     obs VARCHAR(500),
+    `order` int,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_exercises_users
         FOREIGN KEY (userId)
