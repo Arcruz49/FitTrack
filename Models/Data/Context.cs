@@ -10,6 +10,7 @@ namespace FitTrack.Data
         public DbSet<Users> Users { get; set; }
         public DbSet<Profiles> Profiles { get; set; }
         public DbSet<Exercises> Exercises { get; set; }
+        public DbSet<UserMetrics> UserMetrics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

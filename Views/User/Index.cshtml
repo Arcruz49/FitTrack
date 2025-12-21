@@ -5,7 +5,6 @@
 
 <div class="max-w-[1400px] mx-auto w-full p-4 sm:p-6 lg:p-8">
 
-    <!-- Header -->
     <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4" style="margin-left: 0.5%;">
         <div>
             <h1 class="text-3xl font-bold text-white">Configurações de Perfil</h1>
@@ -20,7 +19,6 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        <!-- ================= COLUNA ESQUERDA (MENU) ================= -->
         <div class="space-y-6">
             
             <!-- Card de Identidade -->
@@ -38,15 +36,12 @@
                 </div>
             </div>
 
-            <!-- Menu de Navegação (Abas) -->
             <div class="glass-card rounded-xl overflow-hidden p-2">
                 <nav class="space-y-1">
-                    <!-- Botão 1: Informações Pessoais -->
                     <button id="tab-personal" class="w-full flex items-center px-4 py-3 bg-emerald-500/10 text-emerald-400 rounded-lg font-medium transition text-left tab-link">
                         <i class="fa-regular fa-user w-6"></i> Informações Pessoais
                     </button>
                     
-                    <!-- Botão 2: Medidas e Metas -->
                     <button id="tab-measures" class="w-full flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition text-left tab-link">
                         <i class="fa-solid fa-weight-scale w-6"></i> Medidas e Metas
                     </button>
@@ -58,10 +53,8 @@
             </div>
         </div>
 
-        <!-- ================= COLUNA DIREITA (CONTEÚDO DINÂMICO) ================= -->
         <div class="lg:col-span-2 relative min-h-[500px]">
 
-            <!-- === VIEW 1: INFORMAÇÕES PESSOAIS (Padrão) === -->
             <div id="content-personal" class="space-y-6 content-tab">
                 <div class="glass-card rounded-xl p-6 md:p-8 animate-entry">
                     <div class="flex items-center justify-between mb-6">
@@ -90,7 +83,6 @@
                     </div>
                 </div>
                 
-                <!-- Danger Zone -->
                 <div class="border border-red-900/30 bg-red-900/10 rounded-xl p-6 animate-entry">
                     <h3 class="text-lg font-bold text-red-400 flex items-center gap-2 mb-4">
                         <i class="fa-solid fa-triangle-exclamation"></i> Zona de Perigo
@@ -104,10 +96,8 @@
                 </div>
             </div>
 
-            <!-- === VIEW 2: MEDIDAS E METAS (Oculto Inicialmente) === -->
             <div id="content-measures" class="space-y-6 hidden content-tab">
                 
-                <!-- Card 1: Medidas Atuais -->
                 <div class="glass-card rounded-xl p-6 md:p-8 animate-entry">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-6">
                         <i class="fa-solid fa-ruler-combined text-blue-400"></i> Medidas do Usuário
@@ -128,7 +118,6 @@
                         </div>
                     </div>
 
-                    <!-- Medidas Corporais Extras (Opcional) -->
                     <div class="mt-6 pt-6 border-t border-slate-700">
                         <h4 class="text-sm font-semibold text-slate-300 mb-4">Circunferências (cm)</h4>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -152,7 +141,6 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Metas e Objetivos -->
                 <div class="glass-card rounded-xl p-6 md:p-8 animate-entry" style="animation-delay: 0.1s;">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-6">
                         <i class="fa-solid fa-bullseye text-red-400"></i> Metas
@@ -160,7 +148,6 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         
-                        <!-- Coluna Metas de Peso -->
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-3">Objetivo de Peso</label>
                             <div class="flex items-center gap-4 bg-slate-900/50 p-4 rounded-xl border border-slate-700">
@@ -177,7 +164,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Slider de Meta (Visual) -->
                             <div class="mt-4">
                                 <div class="flex justify-between text-xs text-slate-500 mb-1">
                                     <span>Atual: @Model.weight</span>
@@ -189,7 +175,6 @@
                             </div>
                         </div>
 
-                        <!-- Coluna Frequência -->
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-3">Meta Semanal de Treinos</label>
                             <div class="flex gap-2">
@@ -213,24 +198,44 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Lógica de Abas
             $('.tab-link').on('click', function() {
-                // 1. Remove estilo ativo de todos os botões do menu
                 $('.tab-link').removeClass('bg-emerald-500/10 text-emerald-400').addClass('text-slate-400 hover:bg-slate-800 hover:text-white');
                 
-                // 2. Adiciona estilo ativo ao botão clicado
                 $(this).removeClass('text-slate-400 hover:bg-slate-800 hover:text-white').addClass('bg-emerald-500/10 text-emerald-400');
 
-                // 3. Esconde todas as abas de conteúdo
                 $('.content-tab').addClass('hidden');
 
-                // 4. Mostra a aba correspondente
-                // Se clicou em #tab-personal, mostra #content-personal
-                // Se clicou em #tab-measures, mostra #content-measures
                 const targetId = $(this).attr('id').replace('tab-', 'content-');
                 $('#' + targetId).removeClass('hidden').hide().fadeIn(300);
             });
         });
+
+
+        function SalvarNovaOrdem() {
+            
+
+            $.ajax({
+                url: '/Home/UpdateExerciseOrder',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(exercisesOrder),
+                success: function (response) {
+                    if (response.success) {
+                        
+                    }
+                    else{
+                        @* notyf.success(response.message); *@
+                        notyf.error(response.message);
+
+                    } 
+                    
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
     </script>
 
     <style>
