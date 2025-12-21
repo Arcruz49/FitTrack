@@ -1,11 +1,9 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using FitTrack.Models;
 using Microsoft.AspNetCore.Authorization;
 using FitTrack.Data;
 using FitTrack.Utils;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using FitTrack.Models.Resources;
 
 namespace FitTrack.Controllers;

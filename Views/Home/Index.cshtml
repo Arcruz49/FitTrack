@@ -34,6 +34,22 @@
         
         <!-- Coluna Esquerda -->
         <div class="lg:col-span-8 space-y-6">
+
+
+            <div class="glass-card rounded-xl p-6">
+                <h2 class="font-semibold text-lg flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-chart-line text-blue-500"></i> Progresso no Supino
+                </h2>
+                <div class="flex justify-between items-end mb-2">
+                    <div><p class="text-sm text-slate-400">Atual</p><p class="text-2xl font-bold text-white">52.5 kg</p></div>
+                    <div class="text-right"><p class="text-sm text-slate-400">Meta</p><p class="text-2xl font-bold text-white">60 kg</p></div>
+                </div>
+                <div class="w-full bg-slate-700 rounded-full h-4 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-4 rounded-full" style="width: 87%;"></div>
+                </div>
+            </div>
+
+
             <div class="glass-card rounded-xl overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
                     <h2 class="font-semibold text-lg flex items-center gap-2">
@@ -47,23 +63,15 @@
             </div>
             
             <!-- Card de Progresso (Estático para exemplo) -->
-            <div class="glass-card rounded-xl p-6">
-                <h2 class="font-semibold text-lg flex items-center gap-2 mb-4">
-                    <i class="fa-solid fa-chart-line text-blue-500"></i> Progresso no Supino
-                </h2>
-                <div class="flex justify-between items-end mb-2">
-                    <div><p class="text-sm text-slate-400">Atual</p><p class="text-2xl font-bold text-white">52.5 kg</p></div>
-                    <div class="text-right"><p class="text-sm text-slate-400">Meta</p><p class="text-2xl font-bold text-white">60 kg</p></div>
-                </div>
-                <div class="w-full bg-slate-700 rounded-full h-4 relative overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-4 rounded-full" style="width: 87%;"></div>
-                </div>
-            </div>
+            
         </div>
 
-        <!-- Coluna Direita (Formulário ADD) -->
-        <div class="lg:col-span-4 space-y-6">
-            <div class="glass-card rounded-xl p-6 sticky top-24">
+        <!-- Coluna Direita (Formulário e Histórico) -->
+        <!-- ADICIONADO: lg:sticky, lg:top-24 e self-start na coluna inteira -->
+        <div class="lg:col-span-4 space-y-6 lg:sticky lg:top-24 self-start h-fit">
+            
+            <!-- REMOVIDO: sticky top-24 deste card -->
+            <div class="glass-card rounded-xl p-6">
                 <h2 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-circle-plus text-emerald-500"></i> Adicionar Exercício
                 </h2>
@@ -104,6 +112,7 @@
                 </form>
             </div>
 
+            <!-- Card de Treinos Recentes (agora ele fica fixo junto com o de cima) -->
             <div class="glass-card rounded-xl p-6">
                 <h2 class="font-semibold text-lg text-white mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-history text-slate-400"></i> Treinos Recentes
@@ -121,9 +130,8 @@
                             <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 80%"></div>
                         </div>
                     </div>
-
-                    <!-- Item Histórico 2 -->
-                    <div class="border-l-2 border-blue-500 pl-4 py-1">
+                    <!-- Outros itens do histórico... -->
+                     <div class="border-l-2 border-blue-500 pl-4 py-1">
                         <div class="flex justify-between items-start">
                             <h4 class="font-bold text-white text-sm">Pernas</h4>
                             <span class="text-xs text-slate-500">15 Dez</span>
@@ -133,8 +141,6 @@
                             <div class="bg-blue-500 h-1.5 rounded-full" style="width: 60%"></div>
                         </div>
                     </div>
-
-                    <!-- Item Histórico 3 -->
                     <div class="border-l-2 border-purple-500 pl-4 py-1">
                         <div class="flex justify-between items-start">
                             <h4 class="font-bold text-white text-sm">Costas e Bíceps</h4>
@@ -456,7 +462,7 @@
                     else{
                         @* notyf.success(response.message); *@
 
-                    }
+                    } 
                     
                 },
                 error: function (xhr) {

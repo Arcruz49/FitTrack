@@ -1,8 +1,6 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using FitTrack.Models;
 using FitTrack.Utils;
-using System.Data.Common;
 using FitTrack.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;

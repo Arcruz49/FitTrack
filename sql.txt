@@ -66,6 +66,34 @@ CREATE TABLE IF NOT EXISTS Exercises (
         ON UPDATE CASCADE
 );
 
+
+ALTER TABLE Users
+    ADD COLUMN IF NOT EXISTS bio VARCHAR(500),
+    ADD COLUMN IF NOT EXISTS phoneNumber VARCHAR(25);
+
+CREATE TABLE IF NOT EXISTS UserMetrics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+
+    weight DECIMAL(5,2),
+    height DECIMAL(5,2),
+    bodyFat DECIMAL(5,2),
+
+    armCircumference DECIMAL(5,2),
+    chestCircumference DECIMAL(5,2),
+    waistCircumference DECIMAL(5,2),
+    legCircumference DECIMAL(5,2),
+
+    weightGoal DECIMAL(5,2),
+    workoutsGoal INT,
+
+    CONSTRAINT fk_usermetrics_users
+        FOREIGN KEY (userId)
+        REFERENCES Users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 -- =========================
 -- REATIVA FK
 -- =========================
