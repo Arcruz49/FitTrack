@@ -1,5 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home";
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <!DOCTYPE html>
@@ -73,9 +75,31 @@
                 </div>
                 
                 <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-400">
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="text-white hover:text-emerald-400 transition">Início</a>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="hover:text-white transition">Privacidade</a>
-                    <a href="#" class="hover:text-white transition">Histórico</a>
+
+                    <a asp-controller="Home"
+                    asp-action="Index"
+                    class="@(currentController == "Home" && currentAction == "Index"
+                        ? "text-emerald-400 font-bold"
+                        : "hover:text-white transition")">
+                        Início
+                    </a>
+
+                    <a asp-controller="Home"
+                    asp-action="Privacy"
+                    class="@(currentController == "Home" && currentAction == "Privacy"
+                        ? "text-emerald-400 font-bold"
+                        : "hover:text-white transition")">
+                        Privacidade
+                    </a>
+
+                    <a asp-controller="History"
+                    asp-action="Index"
+                    class="@(currentController == "History"
+                        ? "text-emerald-400 font-bold"
+                        : "hover:text-white transition")">
+                        Histórico
+                    </a>
+
                 </div>
 
                 <div class="flex items-center gap-4">
