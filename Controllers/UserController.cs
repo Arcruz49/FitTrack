@@ -49,6 +49,7 @@ public class UserController : Controller
             user.chestCircumference = metrics.chestCircumference;
             user.waistCircumference = metrics.waistCircumference;
             user.legCircumference = metrics.legCircumference;
+            user.weightGoal = metrics.weightGoal;
         }
 
 

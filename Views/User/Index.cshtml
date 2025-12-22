@@ -122,6 +122,7 @@
                                 </span>
                             </div>
                         </div>
+                        
 
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Altura</label>
@@ -148,6 +149,20 @@
                                     class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 pr-10 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
                                     %
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Meta de Peso</label>
+                            <div class="relative">
+                                <input type="number"
+                                    id="weightGoal"
+                                    step="0.1"
+                                    value="@Model.weightGoal"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 pr-12 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+                                    kg
                                 </span>
                             </div>
                         </div>
@@ -233,7 +248,7 @@
                                 </div>
                                 <div class="ml-auto text-right">
                                     <p class="text-xs text-slate-500">Faltam</p>
-                                    <p class="text-sm font-bold text-emerald-400">+3.5 kg</p>
+                                    <p class="text-sm font-bold text-emerald-400">@(Model.weightGoal - Model.weight) kg</p>
                                 </div>
                             </div>
                             
@@ -344,7 +359,8 @@
                     armCircumference: $('#armCircumference').val(),
                     chestCircumference: $('#chestCircumference').val(),
                     waistCircumference: $('#waistCircumference').val(),
-                    legCircumference: $('#legCircumference').val()
+                    legCircumference: $('#legCircumference').val(),
+                    weightGoal: $('#weightGoal').val(),
                 };
 
 
