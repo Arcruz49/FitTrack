@@ -34,3 +34,8 @@ Thumbs.db
 # IDEs
 .idea/
 .vscode/
+
+.fake
+
+# Uploads
+wwwroot/uploads/

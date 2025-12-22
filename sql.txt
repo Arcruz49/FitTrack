@@ -94,6 +94,10 @@ CREATE TABLE IF NOT EXISTS UserMetrics (
         ON UPDATE CASCADE
 );
 
+ALTER TABLE Users
+    ADD COLUMN IF NOT EXISTS profilePic VARCHAR(500);
+
+
 -- =========================
 -- REATIVA FK
 -- =========================

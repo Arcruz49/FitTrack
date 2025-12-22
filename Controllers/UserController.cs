@@ -30,28 +30,49 @@ public class UserController : Controller
             email = a.email,
             bio = a.bio,
             phoneNumber = util.FormatPhoneNumber(a.phoneNumber ?? ""),
+            profilePic = string.IsNullOrWhiteSpace(a.profilePic) ? Url.Content("~/images/default-pf.png"): Url.Content(a.profilePic),
             creation_date = a.creation_date,
-            creation_date_string = util.FormatCreationDate(a.creation_date)
+            creation_date_string = util.FormatCreationDate(a.creation_date),
         }).FirstOrDefault();
 
         if(user == null) return Json(new {success = false, message = "Usuário não encontrado"});
 
 
+        var metrics = db.UserMetrics.Where(a => a.userId == userId).FirstOrDefault();
+
+        if(metrics != null)
+        {
+            user.weight = metrics.weight;
+            user.height = metrics.height;
+            user.bodyFat = metrics.bodyFat;
+            user.armCircumference = metrics.armCircumference;
+            user.chestCircumference = metrics.chestCircumference;
+            user.waistCircumference = metrics.waistCircumference;
+            user.legCircumference = metrics.legCircumference;
+        }
+
+
+
         return View(user);
     }
 
-    public JsonResult SaveProfileInfo([FromBody] UsersDTO userNewInfo)
+    public JsonResult SaveProfileInfo([FromBody] UsersDTO ProfileInfo)
     {
         try
         {
             #region validacoes
             
-            if(string.IsNullOrEmpty(userNewInfo.name)) return Json(new {success = false, message = "Nome inválido"});
-            if(string.IsNullOrEmpty(userNewInfo.email)) return Json(new {success = false, message = "Email inválido"});
+            if(string.IsNullOrEmpty(ProfileInfo.name)) return Json(new {success = false, message = "Nome inválido", data = ProfileInfo});
+            if(string.IsNullOrEmpty(ProfileInfo.email)) return Json(new {success = false, message = "Email inválido", data = ProfileInfo});
             
             #endregion
 
-            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+                return Json(new { success = false, message = "Usuário não autenticado" });
+
+            int userId = int.Parse(userIdClaim);
 
             var user = db.Users.Where(a => a.id == userId).FirstOrDefault();
             var userMetrics = db.UserMetrics.Where(a => a.userId == userId).FirstOrDefault();
@@ -60,41 +81,42 @@ public class UserController : Controller
             
 
             // Users table
-            user.name = userNewInfo.name;
-            user.email = userNewInfo.email;
-            user.bio = userNewInfo.bio;
-            user.phoneNumber = userNewInfo.phoneNumber;
-            user.phoneNumber = userNewInfo.phoneNumber;
+            user.name = ProfileInfo.name;
+            user.email = ProfileInfo.email;
+            user.bio = ProfileInfo.bio;
+            user.phoneNumber = ProfileInfo.phoneNumber;
+            user.phoneNumber = ProfileInfo.phoneNumber;
 
             // Metrics table --melhorar isso aqui depois
             if(userMetrics == null)
             {
                 userMetrics = new UserMetrics()
                 {
-                    weight = userNewInfo.weight,
-                    height = userNewInfo.height,
-                    bodyFat = userNewInfo.bodyFat,
-                    armCircumference = userNewInfo.armCircumference,
-                    chestCircumference = userNewInfo.chestCircumference,
-                    waistCircumference = userNewInfo.waistCircumference,
-                    legCircumference = userNewInfo.legCircumference,
-                    weightGoal = userNewInfo.weightGoal,
-                    workoutsGoal = userNewInfo.workoutsGoal,
+                    userId = userId,
+                    weight = ProfileInfo.weight,
+                    height = ProfileInfo.height,
+                    bodyFat = ProfileInfo.bodyFat,
+                    armCircumference = ProfileInfo.armCircumference,
+                    chestCircumference = ProfileInfo.chestCircumference,
+                    waistCircumference = ProfileInfo.waistCircumference,
+                    legCircumference = ProfileInfo.legCircumference,
+                    weightGoal = ProfileInfo.weightGoal,
+                    workoutsGoal = ProfileInfo.workoutsGoal,
                 };
                 
                 db.UserMetrics.Add(userMetrics);
             }
             else
             {
-                userMetrics.weight = userNewInfo.weight;
-                userMetrics.height = userNewInfo.height;
-                userMetrics.bodyFat = userNewInfo.bodyFat;
-                userMetrics.armCircumference = userNewInfo.armCircumference;
-                userMetrics.chestCircumference = userNewInfo.chestCircumference;
-                userMetrics.waistCircumference = userNewInfo.waistCircumference;
-                userMetrics.legCircumference = userNewInfo.legCircumference;
-                userMetrics.weightGoal = userNewInfo.weightGoal;
-                userMetrics.workoutsGoal = userNewInfo.workoutsGoal;
+                userMetrics.weight = ProfileInfo.weight;
+                userMetrics.height = ProfileInfo.height;
+                userMetrics.bodyFat = ProfileInfo.bodyFat;
+                userMetrics.armCircumference = ProfileInfo.armCircumference;
+                userMetrics.chestCircumference = ProfileInfo.chestCircumference;
+                userMetrics.waistCircumference = ProfileInfo.waistCircumference;
+                userMetrics.legCircumference = ProfileInfo.legCircumference;
+                userMetrics.weightGoal = ProfileInfo.weightGoal;
+                userMetrics.workoutsGoal = ProfileInfo.workoutsGoal;
             }
 
             db.SaveChanges();
@@ -105,7 +127,56 @@ public class UserController : Controller
         }
         catch(Exception ex)
         {
-            return Json(new { success = false, message = util.ErrorMessage(ex) });
+            return Json(new { success = false, message = util.ErrorMessage(ex) , data = ProfileInfo});
         }
+    }
+
+
+    public async Task<JsonResult> UploadProfilePicture(IFormFile profilePic)
+    {
+        if (profilePic == null || profilePic.Length == 0)
+            return Json(new { success = false, message = "Imagem inválida" });
+
+        var userId = int.Parse(User.FindFirst("UserId")!.Value);
+
+        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(profilePic.FileName)}";
+        var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+        if (!Directory.Exists(folder))
+            Directory.CreateDirectory(folder);
+
+        var path = Path.Combine(folder, fileName);
+
+        using (var stream = new FileStream(path, FileMode.Create))
+        {
+            await profilePic.CopyToAsync(stream);
+        }
+
+        var user = db.Users.First(x => x.id == userId);
+
+        if (!string.IsNullOrWhiteSpace(user.profilePic))
+        {
+            var oldFilePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                user.profilePic.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString())
+            );
+
+            if (System.IO.File.Exists(oldFilePath))
+            {
+                System.IO.File.Delete(oldFilePath);
+            }
+        }
+
+        user.profilePic = "/uploads/" + fileName;
+
+        db.SaveChanges();
+
+        return Json(new
+        {
+            success = true,
+            message = "Foto atualizada com sucesso",
+            imageUrl = user.profilePic
+        });
     }
 }

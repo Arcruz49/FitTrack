@@ -11,6 +11,7 @@ namespace FitTrack.Models
         public string? password { get; set; }
         public string? bio { get; set; }
         public string? phoneNumber { get; set; }
+        public string? profilePic { get; set; }
 
         public DateTime creation_date { get; set; }
 

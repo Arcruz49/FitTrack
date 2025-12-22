@@ -1,6 +1,7 @@
 @model FitTrack.Models.Resources.UsersDTO
 @{
     ViewData["Title"] = "Meu Perfil";
+
 }
 
 <div class="max-w-[1400px] mx-auto w-full p-4 sm:p-6 lg:p-8">
@@ -11,7 +12,7 @@
             <p class="text-slate-400 mt-1">Gerencie seus dados e acompanhe sua evolução.</p>
         </div>
         <div class="flex gap-3">
-            <button class="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition text-sm font-bold">
+            <button class= "save-btn px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition text-sm font-bold">
                 <i class="fa-solid fa-check mr-2"></i> Salvar Alterações
             </button>
         </div>
@@ -21,19 +22,22 @@
 
         <div class="space-y-6">
             
-            <!-- Card de Identidade -->
             <div class="glass-card rounded-2xl p-6 text-center relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-emerald-900/40 to-transparent"></div>
                 <div class="relative z-10">
                     <div class="relative inline-block">
-                        <img src="https://i.pravatar.cc/150?img=11" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-slate-800 shadow-xl object-cover">
-                        <button class="absolute bottom-0 right-0 bg-emerald-500 text-white p-2 rounded-full hover:bg-emerald-400 transition shadow-lg border border-slate-900">
+                        <img src="@Model.profilePic" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-slate-800 shadow-xl object-cover">
+                        <button class=" updloadProfilePic-btn absolute bottom-0 right-0 bg-emerald-500 text-white p-2 rounded-full hover:bg-emerald-400 transition shadow-lg border border-slate-900">
                             <i class="fa-solid fa-camera text-xs"></i>
                         </button>
+
+                        <input type="file" id="profilePicInput" accept="image/*" class="hidden">
+
                     </div>
                     <h2 class="mt-4 text-xl font-bold text-white">@Model.name</h2>
                     <p class="text-sm text-slate-400">Membro desde @Model.creation_date_string</p>
                 </div>
+
             </div>
 
             <div class="glass-card rounded-xl overflow-hidden p-2">
@@ -66,19 +70,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">Nome Completo</label>
-                            <input type="text" value="@Model.name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                            <input type="text" id="name" value="@Model.name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">E-mail</label>
-                            <input type="email" value="@Model.email" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                            <input type="email" id="email" value="@Model.email" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Telefone</label>
-                            <input type="text" value="@Model.phoneNumber" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                            <input type="text" id="phoneNumber" value="@Model.phoneNumber" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-medium text-slate-400 mb-1">Bio</label>
-                            <textarea class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition h-24 resize-none">@Model.bio</textarea>
+                            <textarea id="bio" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition h-24 resize-none">@Model.bio</textarea>
                         </div>
                     </div>
                 </div>
@@ -104,40 +108,109 @@
                     </h3>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">Peso Atual (kg)</label>
-                            <input type="number" value="@Model.weight" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Peso Atual</label>
+                            <div class="relative">
+                                <input type="number"
+                                    id="weight"
+                                    step="0.1"
+                                    value="@Model.weight"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 pr-12 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+                                    kg
+                                </span>
+                            </div>
                         </div>
+
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">Altura (cm)</label>
-                            <input type="number" value="@Model.height" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Altura</label>
+                            <div class="relative">
+                                <input type="number"
+                                    id="height"
+                                    value="@Model.height"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 pr-12 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+                                    cm
+                                </span>
+                            </div>
                         </div>
+
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1">% Gordura (Estimado)</label>
-                            <input type="number" value="@Model.bodyFat" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Gordura (Estimado)</label>
+                            <div class="relative">
+                                <input type="number"
+                                    id="bodyFat"
+                                    value="@Model.bodyFat"
+                                    step="0.1"
+                                    min="0"
+                                    max="100"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 pr-10 py-3 text-white focus:outline-none focus:border-blue-500 transition font-bold text-xl">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+                                    %
+                                </span>
+                            </div>
                         </div>
+
                     </div>
+
 
                     <div class="mt-6 pt-6 border-t border-slate-700">
                         <h4 class="text-sm font-semibold text-slate-300 mb-4">Circunferências (cm)</h4>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             <div>
                                 <label class="text-xs text-slate-500">Braço</label>
-                                <input type="number" value="@Model.armCircumference" class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 py-1 text-white text-sm">
+                                <div class="relative">
+                                    <input type="number"
+                                        id="armCircumference"
+                                        value="@Model.armCircumference"
+                                        class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 pr-10 py-1 text-white text-sm">
+                                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-semibold">
+                                        cm
+                                    </span>
+                                </div>
                             </div>
+
                             <div>
                                 <label class="text-xs text-slate-500">Peito</label>
-                                <input type="number" value="@Model.chestCircumference" class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 py-1 text-white text-sm">
+                                <div class="relative">
+                                    <input type="number"
+                                        id="chestCircumference"
+                                        value="@Model.chestCircumference"
+                                        class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 pr-10 py-1 text-white text-sm">
+                                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-semibold">
+                                        cm
+                                    </span>
+                                </div>
                             </div>
+
                             <div>
                                 <label class="text-xs text-slate-500">Cintura</label>
-                                <input type="number" value="@Model.waistCircumference" class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 py-1 text-white text-sm">
+                                <div class="relative">
+                                    <input type="number"
+                                        id="waistCircumference"
+                                        value="@Model.waistCircumference"
+                                        class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 pr-10 py-1 text-white text-sm">
+                                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-semibold">
+                                        cm
+                                    </span>
+                                </div>
                             </div>
+
                             <div>
                                 <label class="text-xs text-slate-500">Perna</label>
-                                <input type="number" value="@Model.legCircumference" class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 py-1 text-white text-sm">
+                                <div class="relative">
+                                    <input type="number"
+                                        id="legCircumference"
+                                        value="@Model.legCircumference"
+                                        class="w-full bg-slate-900/50 border border-slate-700 rounded px-2 pr-10 py-1 text-white text-sm">
+                                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-semibold">
+                                        cm
+                                    </span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -207,34 +280,104 @@
 
                 const targetId = $(this).attr('id').replace('tab-', 'content-');
                 $('#' + targetId).removeClass('hidden').hide().fadeIn(300);
+
+            });
+
+
+            $(document).on('click', '.updloadProfilePic-btn', function () {
+                $('#profilePicInput').click();
+            });
+
+            // quando o usuário escolher a imagem
+            $('#profilePicInput').on('change', function () {
+                const file = this.files[0];
+                if (!file) return;
+
+                // validação simples
+                if (!file.type.startsWith('image/')) {
+                    notyf.error('Selecione uma imagem válida');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('profilePic', file);
+
+                $.ajax({
+                    url: '/User/UploadProfilePicture',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            notyf.success(response.message);
+
+                            // atualiza avatar sem reload (cache bust)
+                            $('#profileAvatar').attr(
+                                'src',
+                                response.imageUrl + '?v=' + Date.now()
+                            );
+                        } else {
+                            notyf.error(response.message);
+                        }
+                    },
+                    error: function () {
+                        notyf.error('Erro ao enviar imagem');
+                    }
+                });
+            });
+            
+            $(document).on('click', '.save-btn', function () {
+
+                const $btn = $(this);
+
+                $btn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+                 var ProfileInfo = {
+                    name: $('#name').val(),
+                    email: $('#email').val(),
+                    phoneNumber: $('#phoneNumber').val(),
+                    weight: $('#weight').val(),
+                    height: $('#height').val(),
+                    bio: $('#bio').val(),
+                    bodyFat: $('#bodyFat').val(),
+                    armCircumference: $('#armCircumference').val(),
+                    chestCircumference: $('#chestCircumference').val(),
+                    waistCircumference: $('#waistCircumference').val(),
+                    legCircumference: $('#legCircumference').val()
+                };
+
+
+                $.ajax({
+                    url: '/User/SaveProfileInfo',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(ProfileInfo),
+                    success: function (response) {
+                        if (response.success) {
+                            notyf.success(response.message);
+                            
+                        }
+                        else{
+                            notyf.error(response.message);
+
+                        } 
+                        
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                    },
+                    complete: function () {
+                        setTimeout(() => {
+                            $btn.prop('disabled', false)
+                                .removeClass('opacity-50 cursor-not-allowed');
+                        }, 2000);
+                    }
+                });
             });
         });
 
-
-        function SalvarNovaOrdem() {
-            
-
-            $.ajax({
-                url: '/Home/UpdateExerciseOrder',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(exercisesOrder),
-                success: function (response) {
-                    if (response.success) {
-                        
-                    }
-                    else{
-                        @* notyf.success(response.message); *@
-                        notyf.error(response.message);
-
-                    } 
-                    
-                },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                }
-            });
-        }
+        
 
     </script>
 

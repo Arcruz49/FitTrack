@@ -10,6 +10,7 @@ namespace FitTrack.Models.Resources
         public string? name { get; set; }
         public string? bio { get; set; }
         public string? phoneNumber { get; set; }
+        public string? profilePic { get; set; }
         public DateTime creation_date { get; set; }
         public string creation_date_string { get; set; }
 
