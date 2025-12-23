@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Gerenciar Treinos";
+    ViewData["Title"] = "Treinos";
 }
 
 <div class="max-w-[1400px] mx-auto w-full p-4 sm:p-6 lg:p-8 relative z-0">
@@ -256,24 +256,21 @@
 
     </script>
 
-    <!-- ESTILOS CONTROLADOS POR CLASSES (NÃO JS) -->
     <style>
-        /* Estado Padrão (Inativo) */
         .tab-card {
-            background-color: rgba(30, 41, 59, 0.4); /* slate-800/40 */
-            border-color: #334155; /* slate-700 */
+            background-color: rgba(30, 41, 59, 0.4); 
+            border-color: #334155; 
         }
         .tab-badge {
-            background-color: #334155; /* slate-700 */
-            color: #cbd5e1; /* slate-300 */
+            background-color: #334155; 
+            color: #cbd5e1; 
         }
-        .tab-title { color: #cbd5e1; /* slate-300 */ }
+        .tab-title { color: #cbd5e1; }
         .tab-glow { opacity: 0; background-color: rgba(16, 185, 129, 0.1); filter: blur(10px); }
 
-        /* Estado ATIVO (Aplicado quando a div pai tem a classe .active) */
         .workout-tab.active .tab-card {
             background-color: rgba(30, 41, 59, 0.9);
-            border-color: #10b981; /* emerald-500 */
+            border-color: #10b981; 
             transform: translateY(-4px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
@@ -284,8 +281,29 @@
         .workout-tab.active .tab-title { color: white; }
         .workout-tab.active .tab-glow { opacity: 1; }
         
-        /* Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        .tab-card {
+            height: 140px;              
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .tab-title {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .workout-tab p {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+
+
     </style>
 }
