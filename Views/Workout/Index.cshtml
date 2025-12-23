@@ -2,7 +2,6 @@
     ViewData["Title"] = "Gerenciar Treinos";
 }
 
-<!-- Adicionei 'relative' e 'z-0' para garantir que nada escape do fluxo -->
 <div class="max-w-[1400px] mx-auto w-full p-4 sm:p-6 lg:p-8 relative z-0">
 
     <!-- Header -->
@@ -16,11 +15,10 @@
         </button>
     </div>
 
-    <!-- SELETOR DE TREINOS -->
-    <!-- Separei claramente o que é TAB do que é BOTÃO -->
-    <div class="flex gap-4 overflow-x-auto pb-4 mb-6 custom-scrollbar snap-x">
+
+    <div id="workouts-container" class="flex gap-4 overflow-x-auto pb-4 mb-6 custom-scrollbar snap-x">
         
-        <!-- Tab A -->
+        @* <!-- Tab A -->
         <div class="workout-tab min-w-[160px] snap-start cursor-pointer group active" data-letter="A">
             <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
                 <div class="flex justify-between items-start mb-2 relative z-10">
@@ -59,9 +57,8 @@
                 <p class="text-xs text-slate-500 mt-1 relative z-10">7 Exercícios</p>
                 <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300"></div>
             </div>
-        </div>
+        </div> *@
 
-        <!-- Botão Novo Treino (ID ÚNICO e FORA da classe workout-tab) -->
         <button id="btn-create-new" type="button" class="min-w-[160px] snap-start border-2 border-dashed border-slate-700 rounded-xl p-4 flex flex-col items-center justify-center text-slate-500 hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-slate-800/50 transition gap-2">
             <i class="fa-solid fa-plus text-xl"></i>
             <span class="font-medium text-sm">Novo Treino</span>
@@ -69,7 +66,6 @@
 
     </div>
 
-    <!-- ÁREA DE CONTEÚDO -->
     <div class="glass-card bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b border-slate-700/50 pb-6">
@@ -95,7 +91,6 @@
         </div>
 
         <div id="exercises-list" class="space-y-3">
-            <!-- Item Exemplo -->
             <div class="bg-slate-900/40 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
                 <div class="flex-1 w-full text-center sm:text-left">
                     <h4 class="font-bold text-white text-lg">Supino Reto</h4>
@@ -113,9 +108,7 @@
     </div>
 </div>
 
-<!-- MODAL NOVO TREINO (Z-Index alto e fixed) -->
 <div id="newWorkoutModal" class="hidden fixed inset-0 z-[9999]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!-- Backdrop Escuro -->
     <div class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity" id="modalBackdrop"></div>
 
     <div class="fixed inset-0 z-10 overflow-y-auto">
@@ -127,18 +120,18 @@
                         <i class="fa-solid fa-folder-plus text-emerald-500"></i> Criar Novo Treino
                     </h3>
                     <form id="createForm" class="space-y-4">
-                        <div>
+                        @* <div>
                             <label class="block text-xs text-slate-400 mb-1">Letra</label>
                             <input type="text" placeholder="D" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none">
-                        </div>
+                        </div> *@
                         <div>
                             <label class="block text-xs text-slate-400 mb-1">Nome</label>
-                            <input type="text" placeholder="Ex: Cardio e Abdômen" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none">
+                            <input id="newName" type="text" placeholder="Ex: Cardio e Abdômen" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none">
                         </div>
                     </form>
                 </div>
                 <div class="bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2 border-t border-slate-700">
-                    <button type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 sm:w-auto">Criar</button>
+                    <button id="add-workout-btn" type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 sm:w-auto">Criar</button>
                     <button type="button" id="btn-close-modal" class="mt-3 inline-flex w-full justify-center rounded-lg bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 shadow-sm ring-1 ring-inset ring-slate-600 hover:bg-slate-600 sm:mt-0 sm:w-auto">Cancelar</button>
                 </div>
             </div>
@@ -150,21 +143,19 @@
     <script>
         $(document).ready(function() {
             
-            // === 1. Troca de Abas (Simples e Segura) ===
-            $('.workout-tab').on('click', function() {
-                // Remove a classe 'active' de todos e adiciona no clicado
+            $('#workouts-container').on('click', '.workout-tab', function () {
                 $('.workout-tab').removeClass('active');
                 $(this).addClass('active');
 
-                // Atualiza visualmente os campos (Simulação)
                 const letter = $(this).data('letter');
                 $('#display-letter').text(letter);
-                
-                // Feedback visual na lista
-                $('#exercises-list').css('opacity', '0.4').animate({opacity: 1}, 200);
+
+                $('#exercises-list')
+                    .css('opacity', '0.4')
+                    .animate({ opacity: 1 }, 200);
             });
 
-            // === 2. Modal (Usando jQuery puro e simples) ===
+
             const $modal = $('#newWorkoutModal');
 
             $('#btn-create-new').on('click', function(e) {
@@ -178,7 +169,91 @@
                 });
             });
 
+            GetWorkouts();
+
+
+
+            $(document).on('click', '#add-workout-btn', function () {
+                let newName = $('#newName').val()
+
+                $.ajax({
+                    url: '/Workout/CreateWorkout',
+                    type: 'POST',
+                    data: { name : newName},
+                    success: function (response) {
+                        if (response.success) {
+                            $('#newWorkoutModal').addClass('hidden');
+                            GetWorkouts();
+                            notyf.success(response.message);
+                        } else {
+                            notyf.error(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('Erro ao criar: ' + xhr.responseText);
+                    }
+                });
+            });
+
         });
+
+
+        function GetWorkouts() {
+            $.ajax({
+                url: '/Workout/GetWorkouts',
+                type: 'GET',
+                success: function (response) {
+                    if (!response.success) {
+                        notyf.error(response.message);
+                        return;
+                    }
+
+                    const container = $('#workouts-container');
+                    const btnNew = $('#btn-create-new');
+
+                    // Remove tabs antigas (mantém o botão)
+                    container.find('.workout-tab').remove();
+
+                    response.data.forEach((workout, index) => {
+
+                        const isActive = index === 0 ? 'active' : '';
+
+                        const tabHtml = `
+                        <div class="workout-tab min-w-[160px] snap-start cursor-pointer group ${isActive}"
+                            data-id="${workout.id}"
+                            data-letter="${workout.letter}">
+                            
+                            <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
+                                <div class="flex justify-between items-start mb-2 relative z-10">
+                                    <span class="tab-badge text-xs font-bold px-2 py-1 rounded">
+                                        ${workout.letter}
+                                    </span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-slate-500 hover:text-white p-1"></i>
+                                </div>
+
+                                <h3 class="tab-title font-bold text-lg truncate relative z-10">
+                                    ${workout.name}
+                                </h3>
+
+                                <p class="text-xs text-slate-500 mt-1 relative z-10">
+                                    ${workout.description}
+                                </p>
+
+                                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300"></div>
+                            </div>
+                        </div>`;
+
+                        btnNew.before(tabHtml);
+                    });
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        
+
     </script>
 
     <!-- ESTILOS CONTROLADOS POR CLASSES (NÃO JS) -->

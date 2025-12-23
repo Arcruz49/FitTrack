@@ -21,7 +21,11 @@ public class WorkoutController : Controller
     public IActionResult Index()
     {
 
-        int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+        var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+
+        int userId = int.Parse(userIdClaim);
 
         var user = db.Users.Where(a => a.id == userId).Select(a => new UsersDTO
         {
@@ -35,26 +39,89 @@ public class WorkoutController : Controller
             creation_date_string = util.FormatCreationDate(a.creation_date),
         }).FirstOrDefault();
 
-        if(user == null) return Json(new {success = false, message = "Usuário não encontrado"});
-
-
-        var metrics = db.UserMetrics.Where(a => a.userId == userId).FirstOrDefault();
-
-        if(metrics != null)
-        {
-            user.weight = metrics.weight;
-            user.height = metrics.height;
-            user.bodyFat = metrics.bodyFat;
-            user.armCircumference = metrics.armCircumference;
-            user.chestCircumference = metrics.chestCircumference;
-            user.waistCircumference = metrics.waistCircumference;
-            user.legCircumference = metrics.legCircumference;
-            user.weightGoal = metrics.weightGoal;
-        }
-
-
 
         return View(user);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public JsonResult GetWorkouts()
+    {
+        try
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+
+            int userId = int.Parse(userIdClaim);
+
+            var workouts = db.UserWorkouts.Where(a => a.userId == userId).Select(a => new WorkoutDTO()
+            {
+                id = a.id,
+                name = a.name,
+                description = a.description,
+                letter = a.letter
+            }).ToList();
+
+            return Json(new {success = true, message = "", data = workouts});
+        }
+        catch(Exception ex)
+        {
+            return Json(new { success = false, message = util.ErrorMessage(ex)});
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    public JsonResult CreateWorkout(string name = "")
+    {
+        try
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+
+            int userId = int.Parse(userIdClaim);
+
+             var usedLetters = db.UserWorkouts
+            .Where(w => w.userId == userId)
+            .Select(w => w.letter.ToUpper())
+            .ToHashSet();
+
+            string nextLetter = null;
+
+            for (char c = 'A'; c <= 'Z'; c++)
+            {
+                if (!usedLetters.Contains(c.ToString()))
+                {
+                    nextLetter = c.ToString();
+                    break;
+                }
+            }
+
+            if (nextLetter == null)
+                return Json(new { success = false, message = "Limite máximo de treinos atingido (A–Z)" });
+
+
+            var workout = new UserWorkout()
+            {
+                userId = userId,
+                name = name,
+                // description = newWorkout.description,
+                description = "",
+                letter = nextLetter,
+            };
+
+            db.UserWorkouts.Add(workout);
+            db.SaveChanges();
+
+
+            return Json(new {success = true, message = "Treino criado com sucesso"});
+        }
+        catch(Exception ex)
+        {
+            return Json(new { success = false, message = util.ErrorMessage(ex)});
+        }
     }
 
 

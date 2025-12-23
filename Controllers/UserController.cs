@@ -56,15 +56,17 @@ public class UserController : Controller
 
         return View(user);
     }
-
+    
+    [Authorize]
+    [HttpPost]
     public JsonResult SaveProfileInfo([FromBody] UsersDTO ProfileInfo)
     {
         try
         {
             #region validacoes
             
-            if(string.IsNullOrEmpty(ProfileInfo.name)) return Json(new {success = false, message = "Nome inválido", data = ProfileInfo});
-            if(string.IsNullOrEmpty(ProfileInfo.email)) return Json(new {success = false, message = "Email inválido", data = ProfileInfo});
+            if(string.IsNullOrEmpty(ProfileInfo.name)) return Json(new {success = false, message = "Nome inválido"});
+            if(string.IsNullOrEmpty(ProfileInfo.email)) return Json(new {success = false, message = "Email inválido"});
             
             #endregion
 
@@ -128,11 +130,12 @@ public class UserController : Controller
         }
         catch(Exception ex)
         {
-            return Json(new { success = false, message = util.ErrorMessage(ex) , data = ProfileInfo});
+            return Json(new { success = false, message = util.ErrorMessage(ex)});
         }
     }
 
-
+    [Authorize]
+    [HttpPost]
     public async Task<JsonResult> UploadProfilePicture(IFormFile profilePic)
     {
         if (profilePic == null || profilePic.Length == 0)
