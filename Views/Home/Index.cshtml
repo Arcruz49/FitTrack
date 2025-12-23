@@ -4,19 +4,16 @@
 
 <main class="flex-grow p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto w-full relative">
         
-    <!-- Cabeçalho -->
     <div class="mb-8" style="margin-left: 0.5%;">
         <h1 class="text-3xl font-bold text-white">Olá, @ViewBag.userName</h1>
         <p class="text-slate-400">Aqui está o resumo do seu treino de hoje.</p>
     </div>
 
-    <!-- Grid de Estatísticas (KPIs) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
             <span class="text-3xl font-bold text-emerald-400" id="totalExercises">0</span>
             <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Exercícios Hoje</span>
         </div>
-        <!-- Outros cards mantidos iguais... -->
         <div class="glass-card rounded-xl p-5 flex flex-col items-center justify-center hover:border-emerald-500/50 transition duration-300">
             <span class="text-3xl font-bold text-blue-400">3.2</span>
             <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">Tonelagem (Ton)</span>
@@ -31,10 +28,8 @@
         </div>
     </div>
 
-    <!-- Layout Principal -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- Coluna Esquerda -->
         <div class="lg:col-span-8 space-y-6">
 
 
@@ -60,26 +55,20 @@
                     <span id="date" class="text-xs bg-emerald-900/50 text-emerald-400 px-2 py-1 rounded border border-emerald-900">Data</span>
                 </div>
                 <div id="workoutList" class="p-6 space-y-4">
-                    <!-- Lista carregada via JS -->
                 </div>
             </div>
             
-            <!-- Card de Progresso (Estático para exemplo) -->
             
         </div>
 
-        <!-- Coluna Direita (Formulário e Histórico) -->
-        <!-- ADICIONADO: lg:sticky, lg:top-24 e self-start na coluna inteira -->
         <div class="lg:col-span-4 space-y-6 lg:sticky lg:top-24 self-start h-fit">
             
-            <!-- REMOVIDO: sticky top-24 deste card -->
             <div class="glass-card rounded-xl p-6">
                 <h2 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-circle-plus text-emerald-500"></i> Adicionar Exercício
                 </h2>
                 
                 <form id="addForm" class="space-y-4">
-                    <!-- Campos ID únicos para adição -->
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1">Exercício</label>
                         <input type="text" id="name-add" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
@@ -114,14 +103,12 @@
                 </form>
             </div>
 
-            <!-- Card de Treinos Recentes (agora ele fica fixo junto com o de cima) -->
             <div class="glass-card rounded-xl p-6">
                 <h2 class="font-semibold text-lg text-white mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-history text-slate-400"></i> Treinos Recentes
                 </h2>
 
                 <div class="space-y-4">
-                    <!-- Item Histórico 1 -->
                     <div class="border-l-2 border-emerald-500 pl-4 py-1">
                         <div class="flex justify-between items-start">
                             <h4 class="font-bold text-white text-sm">Peito e Tríceps</h4>
@@ -132,7 +119,6 @@
                             <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 80%"></div>
                         </div>
                     </div>
-                    <!-- Outros itens do histórico... -->
                      <div class="border-l-2 border-blue-500 pl-4 py-1">
                         <div class="flex justify-between items-start">
                             <h4 class="font-bold text-white text-sm">Pernas</h4>
@@ -220,11 +206,12 @@
         </div>
     </div>
 
+
+    
+
 </main>
 
 @section Scripts {
-
-
     <script>
         $(document).ready(function() {
             $("<style>.ui-state-highlight { height: 80px; background-color: rgba(16, 185, 129, 0.1); border: 2px dashed #10b981; border-radius: 0.75rem; margin-bottom: 1rem; }</style>").appendTo("head");
@@ -249,13 +236,11 @@
                     data: formData,
                     success: function(response) {
                         if (response.success) {
-                            notyf.success(response.message);
+                            if(typeof notyf !== 'undefined') notyf.success(response.message);
                             GetExercises(); 
                             $('#addForm')[0].reset();
-                        } 
-                        else
-                        {
-                            notyf.error(response.message);
+                        } else {
+                            if(typeof notyf !== 'undefined') notyf.error(response.message);
                         }
                     },
                     error: function(xhr) { alert('Erro ao criar: ' + xhr.responseText); }
@@ -280,9 +265,8 @@
                             $('#edit-obs').val(response.data.obs);
 
                             $('#editModal').removeClass('hidden').hide().fadeIn(200);
-                            
                         } else {                             
-                            notyf.error(response.message);
+                            if(typeof notyf !== 'undefined') notyf.error(response.message);
                         }
                     },
                     error: function(xhr) { alert('Erro ao buscar dados: ' + xhr.responseText); }
@@ -309,10 +293,9 @@
                         if (response.success) {
                             closeModal();
                             GetExercises();
-                            notyf.success(response.message);
+                            if(typeof notyf !== 'undefined') notyf.success(response.message);
                         } else {
-                            notyf.error(response.message);
-
+                            if(typeof notyf !== 'undefined') notyf.error(response.message);
                         }
                     },
                     error: function (xhr) {
@@ -321,12 +304,17 @@
                 });
             });
 
-            $(document).on('click', '.delete-btn', function () {
+            $(document).on('click', '.delete-btn', async function () { 
                 const btn = $(this);
                 const id = btn.data('id');
                 const card = btn.closest('.animate-entry');
 
-                if (!confirm('Deseja realmente excluir este exercício?')) return;
+                const confirmed = await showConfirm(
+                    "Excluir Exercício?", 
+                    "Você tem certeza que deseja remover este registro? Essa ação é irreversível."
+                );
+
+                if (!confirmed) return;
 
                 card.css('pointer-events', 'none').addClass('opacity-50');
 
@@ -341,9 +329,9 @@
                                 let count = parseInt($('#totalExercises').text()) - 1;
                                 $('#totalExercises').text(count > 0 ? count : 0);
                             });
-                            notyf.success(response.message);
+                            @* if(typeof notyf !== 'undefined') notyf.success(response.message); *@
                         } else {
-                            notyf.error(response.message);
+                            if(typeof notyf !== 'undefined') notyf.error(response.message);
                             card.css('pointer-events', '').removeClass('opacity-50');
                         }
                     },
@@ -356,7 +344,6 @@
 
             $('#btn-cancel-edit, #modalBackdrop').on('click', closeModal);
         });
-
 
         function GetExercises() {
             $.ajax({
@@ -371,18 +358,14 @@
                             let dataAttributes = `data-id="${ex.id}"`; 
 
                             let html = `
-                                <!-- O data-id é fundamental para o Sortable saber quem é quem -->
                                 <div class="workout-item animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4" data-id="${ex.id}">
                                     
                                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
 
                                     <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
-                                        
-                                        <!-- Drag Handle (Maçaneta) -->
                                         <div class="drag-handle cursor-move text-slate-600 hover:text-emerald-500 p-2 -ml-2 transition hidden sm:block">
                                             <i class="fa-solid fa-grip-vertical"></i>
                                         </div>
-                                        <!-- Versão Mobile (Icone Horizontal) -->
                                         <div class="drag-handle cursor-move text-slate-600 hover:text-emerald-500 p-2 -ml-2 transition sm:hidden">
                                             <i class="fa-solid fa-grip-lines"></i>
                                         </div>
@@ -416,12 +399,9 @@
                             $('#workoutList').append(html);
                         });
 
-
                         InitSortable();
-                    }
-                    else{
-                        notyf.error(response.message);
-
+                    } else {
+                        if(typeof notyf !== 'undefined') notyf.error(response.message);
                     }
                 }
             });
@@ -431,21 +411,17 @@
             if ($("#workoutList").data("ui-sortable")) {
                 $("#workoutList").sortable("destroy");
             }
-
             $("#workoutList").sortable({
                 handle: ".drag-handle", 
                 placeholder: "ui-state-highlight", 
                 axis: "y", 
                 opacity: 0.8,
-                update: function (event, ui) {
-                    SalvarNovaOrdem();
-                }
+                update: function (event, ui) { SalvarNovaOrdem(); }
             });
         }
 
         function SalvarNovaOrdem() {
             var exercisesOrder = [];
-            
             $("#workoutList .workout-item").each(function (index) {
                 var id = $(this).data('id');
                 exercisesOrder.push({ id: parseInt(id), order: index + 1 });
@@ -458,18 +434,11 @@
                 data: JSON.stringify(exercisesOrder),
                 success: function (response) {
                     if (!response.success) {
-                        notyf.error(response.message);
+                        if(typeof notyf !== 'undefined') notyf.error(response.message);
                         GetExercises(); 
                     }
-                    else{
-                        @* notyf.success(response.message); *@
-
-                    } 
-                    
                 },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                }
+                error: function (xhr) { console.error(xhr.responseText); }
             });
         }
 

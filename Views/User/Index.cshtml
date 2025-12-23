@@ -93,7 +93,7 @@
                     </h3>
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <p class="text-xs text-slate-500">Ao deletar sua conta, todos os seus dados serão perdidos.</p>
-                        <button class="px-4 py-2 bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/50 rounded-lg text-sm font-semibold transition whitespace-nowrap">
+                        <button class="delete-btn px-4 py-2 bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/50 rounded-lg text-sm font-semibold transition whitespace-nowrap">
                             Deletar Conta
                         </button>
                     </div>
@@ -303,12 +303,10 @@
                 $('#profilePicInput').click();
             });
 
-            // quando o usuário escolher a imagem
             $('#profilePicInput').on('change', function () {
                 const file = this.files[0];
                 if (!file) return;
 
-                // validação simples
                 if (!file.type.startsWith('image/')) {
                     notyf.error('Selecione uma imagem válida');
                     return;
@@ -327,7 +325,6 @@
                         if (response.success) {
                             notyf.success(response.message);
 
-                            // atualiza avatar sem reload (cache bust)
                             $('#profileAvatar').attr(
                                 'src',
                                 response.imageUrl + '?v=' + Date.now()
@@ -391,6 +388,52 @@
                     }
                 });
             });
+
+
+            $(document).on('click', '.delete-btn', async function () {
+
+                const $btn = $(this);
+
+                $btn.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+                const confirmed = await showConfirm(
+                    "Excluir conta?", 
+                    "Você tem certeza que deseja excluir sua conta? TODOS os seus dados serão perdidos!"
+                );
+
+                if (!confirmed) return;
+
+
+                @* $.ajax({
+                    url: '/User/SaveProfileInfo',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(ProfileInfo),
+                    success: function (response) {
+                        if (response.success) {
+                            notyf.success(response.message);
+                            
+                        }
+                        else{
+                            notyf.error(response.message);
+
+                        } 
+                        
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                    },
+                    complete: function () {
+                        setTimeout(() => {
+                            $btn.prop('disabled', false)
+                                .removeClass('opacity-50 cursor-not-allowed');
+                        }, 2000);
+                    }
+                }); *@
+            });
+
+
+
         });
 
         
