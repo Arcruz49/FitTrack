@@ -88,7 +88,7 @@ public class WorkoutController : Controller
             .Select(w => w.letter.ToUpper())
             .ToHashSet();
 
-            string nextLetter = null;
+            string nextLetter = "";
 
             for (char c = 'A'; c <= 'Z'; c++)
             {
@@ -99,7 +99,7 @@ public class WorkoutController : Controller
                 }
             }
 
-            if (nextLetter == null)
+            if (nextLetter == "")
                 return Json(new { success = false, message = "Limite máximo de treinos atingido (A–Z)" });
 
 
