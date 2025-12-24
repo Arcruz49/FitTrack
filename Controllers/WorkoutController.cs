@@ -4,6 +4,7 @@ using FitTrack.Data;
 using FitTrack.Utils;
 using FitTrack.Models.Resources;
 using FitTrack.Models;
+using Microsoft.Extensions.WebEncoders.Testing;
 
 namespace FitTrack.Controllers;
 
@@ -124,5 +125,63 @@ public class WorkoutController : Controller
         }
     }
 
+    [Authorize]
+    [HttpPost]
+    public JsonResult DeleteWorkout(int id = 0)
+    {
+        try
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+
+            int userId = int.Parse(userIdClaim);
+
+            var workout = db.UserWorkouts.Where(a => a.id == id && a.userId == userId).FirstOrDefault();
+
+            if(workout == null) return Json(new { success = false, message = "Treino não encontrado" });
+
+            db.UserWorkouts.Remove(workout);
+            db.SaveChanges();
+
+            return Json(new {success = true, message = "Treino excluído com sucesso"});
+        }
+        catch(Exception ex)
+        {
+            return Json(new {success = false , message = util.ErrorMessage(ex)});
+        }        
+    }
+
+    [Authorize]
+    [HttpGet]
+    public JsonResult GetWorkoutDetails(int id = 0)
+    {
+        try
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+
+            int userId = int.Parse(userIdClaim);
+
+            var workout = db.UserWorkouts.Where(a => a.id == id && a.userId == userId).Select(a => new WorkoutDTO
+            {
+                id = a.id,
+                name = a.name,
+                description = a.description,
+                letter = a.letter
+            }).FirstOrDefault();
+
+            if(workout == null) return Json(new { success = false, message = "Treino não encontrado" });
+
+
+
+            return Json(new {success = true, message = "", data = workout});
+        }
+        catch(Exception ex)
+        {
+            return Json(new {success = false , message = util.ErrorMessage(ex)});
+        }        
+    }
 
 }

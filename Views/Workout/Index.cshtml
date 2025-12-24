@@ -18,47 +18,6 @@
 
     <div id="workouts-container" class="flex gap-4 overflow-x-auto pb-4 mb-6 custom-scrollbar snap-x">
         
-        @* <!-- Tab A -->
-        <div class="workout-tab min-w-[160px] snap-start cursor-pointer group active" data-letter="A">
-            <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
-                <div class="flex justify-between items-start mb-2 relative z-10">
-                    <span class="tab-badge text-xs font-bold px-2 py-1 rounded">A</span>
-                    <i class="fa-solid fa-ellipsis-vertical text-slate-500 hover:text-white p-1"></i>
-                </div>
-                <h3 class="tab-title font-bold text-lg truncate relative z-10">Peito/Tríceps</h3>
-                <p class="text-xs text-slate-500 mt-1 relative z-10">6 Exercícios</p>
-                
-                <!-- Glow Effect (Controlado via CSS) -->
-                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300"></div>
-            </div>
-        </div>
-
-        <!-- Tab B -->
-        <div class="workout-tab min-w-[160px] snap-start cursor-pointer group" data-letter="B">
-            <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
-                <div class="flex justify-between items-start mb-2 relative z-10">
-                    <span class="tab-badge text-xs font-bold px-2 py-1 rounded">B</span>
-                    <i class="fa-solid fa-ellipsis-vertical text-slate-500 hover:text-white p-1"></i>
-                </div>
-                <h3 class="tab-title font-bold text-lg truncate relative z-10">Costas/Bíceps</h3>
-                <p class="text-xs text-slate-500 mt-1 relative z-10">5 Exercícios</p>
-                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300"></div>
-            </div>
-        </div>
-
-        <!-- Tab C -->
-        <div class="workout-tab min-w-[160px] snap-start cursor-pointer group" data-letter="C">
-            <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
-                <div class="flex justify-between items-start mb-2 relative z-10">
-                    <span class="tab-badge text-xs font-bold px-2 py-1 rounded">C</span>
-                    <i class="fa-solid fa-ellipsis-vertical text-slate-500 hover:text-white p-1"></i>
-                </div>
-                <h3 class="tab-title font-bold text-lg truncate relative z-10">Pernas</h3>
-                <p class="text-xs text-slate-500 mt-1 relative z-10">7 Exercícios</p>
-                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300"></div>
-            </div>
-        </div> *@
-
         <button id="btn-create-new" type="button" class="min-w-[160px] snap-start border-2 border-dashed border-slate-700 rounded-xl p-4 flex flex-col items-center justify-center text-slate-500 hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-slate-800/50 transition gap-2">
             <i class="fa-solid fa-plus text-xl"></i>
             <span class="font-medium text-sm">Novo Treino</span>
@@ -148,13 +107,64 @@
                 $(this).addClass('active');
 
                 const letter = $(this).data('letter');
+                const id = $(this).data('id');
+                
                 $('#display-letter').text(letter);
+                // GetWorkoutDetails(id); 
 
                 $('#exercises-list')
                     .css('opacity', '0.4')
                     .animate({ opacity: 1 }, 200);
             });
 
+            $('#workouts-container').on('click', '.btn-options', function(e) {
+                e.stopPropagation();
+                
+                $('.dropdown-menu').not($(this).next()).addClass('hidden');
+                
+                const menu = $(this).next('.dropdown-menu');
+                menu.toggleClass('hidden');
+            });
+
+            $(document).on('click', function() {
+                $('.dropdown-menu').addClass('hidden');
+            });
+
+            $('#workouts-container').on('click', '.btn-delete-workout', async function(e) {
+                e.stopPropagation(); 
+                const btn = $(this);
+                const id = btn.data('id');
+                const card = btn.closest('.workout-tab');
+
+                const confirmed = await showConfirm(
+                    "Excluir Treino?", 
+                    "Você tem certeza? Todos os exercícios deste treino também serão apagados."
+                );
+
+                if (!confirmed) return;
+
+                $.ajax({
+                    url: '/Workout/DeleteWorkout', 
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            notyf.success(response.message);
+                            card.animate({ width: 0, opacity: 0, margin: 0, padding: 0 }, 300, function(){
+                                card.remove();
+                                if(card.hasClass('active')) {
+                                    $('.workout-tab').first().click();
+                                }
+                            });
+                        } else {
+                            notyf.error(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        notyf.error('Erro ao deletar treino.');
+                    }
+                });
+            });
 
             const $modal = $('#newWorkoutModal');
 
@@ -169,10 +179,6 @@
                 });
             });
 
-            GetWorkouts();
-
-
-
             $(document).on('click', '#add-workout-btn', function () {
                 let newName = $('#newName').val()
 
@@ -182,7 +188,8 @@
                     data: { name : newName},
                     success: function (response) {
                         if (response.success) {
-                            $('#newWorkoutModal').addClass('hidden');
+                            $('#newWorkoutModal').fadeOut(200, function() { $(this).addClass('hidden'); });
+                            $('#newName').val(''); 
                             GetWorkouts();
                             notyf.success(response.message);
                         } else {
@@ -190,13 +197,13 @@
                         }
                     },
                     error: function (xhr) {
-                        alert('Erro ao criar: ' + xhr.responseText);
+                        notyf.error('Erro ao criar treino.');
                     }
                 });
             });
 
+            GetWorkouts();
         });
-
 
         function GetWorkouts() {
             $.ajax({
@@ -211,12 +218,25 @@
                     const container = $('#workouts-container');
                     const btnNew = $('#btn-create-new');
 
-                    // Remove tabs antigas (mantém o botão)
                     container.find('.workout-tab').remove();
 
                     response.data.forEach((workout, index) => {
-
                         const isActive = index === 0 ? 'active' : '';
+
+                        const menuHtml = `
+                            <div class="relative">
+                                <button class="btn-options p-1 text-slate-500 hover:text-white transition rounded-full hover:bg-slate-700/50">
+                                    <i class="fa-solid fa-ellipsis-vertical px-1"></i>
+                                </button>
+                                
+                                <!-- Menu Dropdown -->
+                                <div class="dropdown-menu hidden absolute right-0 top-6 w-32 bg-slate-800 border border-slate-600 rounded-lg shadow-xl z-50 overflow-hidden">
+                                    <button class="btn-delete-workout w-full text-left px-4 py-2 text-xs font-bold text-red-400 hover:bg-slate-700 hover:text-red-300 transition flex items-center gap-2" data-id="${workout.id}">
+                                        <i class="fa-solid fa-trash"></i> Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        `;
 
                         const tabHtml = `
                         <div class="workout-tab min-w-[160px] snap-start cursor-pointer group ${isActive}"
@@ -224,22 +244,24 @@
                             data-letter="${workout.letter}">
                             
                             <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
-                                <div class="flex justify-between items-start mb-2 relative z-10">
+                                <div class="flex justify-between items-start mb-2 relative z-20">
                                     <span class="tab-badge text-xs font-bold px-2 py-1 rounded">
                                         ${workout.letter}
                                     </span>
-                                    <i class="fa-solid fa-ellipsis-vertical text-slate-500 hover:text-white p-1"></i>
+                                    
+                                    <!-- Inserindo o Menu aqui -->
+                                    ${menuHtml}
                                 </div>
 
-                                <h3 class="tab-title font-bold text-lg truncate relative z-10">
+                                <h3 class="tab-title font-bold text-lg truncate relative z-10 mt-1">
                                     ${workout.name}
                                 </h3>
 
-                                <p class="text-xs text-slate-500 mt-1 relative z-10">
-                                    ${workout.description}
+                                <p class="text-xs text-slate-500 mt-1 relative z-10 line-clamp-2">
+                                    ${workout.description || 'Sem descrição'}
                                 </p>
 
-                                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300"></div>
+                                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300 z-0"></div>
                             </div>
                         </div>`;
 
@@ -251,15 +273,16 @@
                 }
             });
         }
-
-        
-
     </script>
 
     <style>
         .tab-card {
             background-color: rgba(30, 41, 59, 0.4); 
             border-color: #334155; 
+            height: 140px;              
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
         }
         .tab-badge {
             background-color: #334155; 
@@ -281,29 +304,12 @@
         .workout-tab.active .tab-title { color: white; }
         .workout-tab.active .tab-glow { opacity: 1; }
         
+        .dropdown-menu {
+            animation: fadeIn 0.1s ease-out;
+        }
+        @@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
         .custom-scrollbar::-webkit-scrollbar { height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
-        .tab-card {
-            height: 140px;              
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .tab-title {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .workout-tab p {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-
-
     </style>
 }
