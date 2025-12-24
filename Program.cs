@@ -10,6 +10,9 @@ builder.Services.AddDbContext<Context>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32)))
 );
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
