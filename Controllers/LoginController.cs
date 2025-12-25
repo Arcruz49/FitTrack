@@ -70,43 +70,38 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<JsonResult> Register(string name = "", string email = "", string password = "", string confirmPassword = "")
     {
-        try
+
+        var registerResult = _authService.Register(name, email, password, confirmPassword);
+
+        
+        if (!registerResult.success) return Json(registerResult);
+
+        var register = registerResult.data;
+
+        // Criar claims do usuário
+        var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.NameIdentifier, register.name ?? ""),
+            new Claim("UserId", register.id.ToString()),
+            new Claim("Admin", "False")
+        };
 
-            var registerResult = _authService.Register(name, email, password, confirmPassword);
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            if (!registerResult.success)
-            {
-                
-            }
-            // Criar claims do usuário
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, newUser.name ?? ""),
-                new Claim("UserId", newUser.id.ToString()),
-                new Claim("Admin", "False") // Usuário normal
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(12)
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties
-            );
-
-            return Json(new { success = true, message = "Registro realizado com sucesso" });
-        }
-        catch (Exception ex)
+        var authProperties = new AuthenticationProperties
         {
-            return Json(new { success = false, message = util.ErrorMessage(ex) });
-        }
+            IsPersistent = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddHours(12)
+        };
+
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(claimsIdentity),
+            authProperties
+        );
+
+        return Json(new { success = true, message = "Registro realizado com sucesso" });
+    
     }
 
     [HttpGet]
