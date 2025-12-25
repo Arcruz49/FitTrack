@@ -1,6 +1,7 @@
 using FitTrack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using FitTrack.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,9 @@ builder.Services.AddDbContext<Context>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32)))
 );
 
+builder.Services.AddScoped<Util>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -11,12 +11,13 @@ namespace FitTrack.Controllers;
 public class LoginController : Controller
 {
     private readonly IAuthService _authService;
-    public Util util = new Util();
+    private readonly Util _util;
 
-
-    public LoginController(IAuthService authService)
+    public LoginController(IAuthService authService, Util util)
     {
         _authService = authService;
+        _util = util;
+
     }
     public IActionResult Index()
     {
@@ -35,12 +36,12 @@ public class LoginController : Controller
         var profileResult = _authService.GetProfile(authResult.data!.profileId);
 
         var user = authResult.data!;
-        var profile = profileResult.data!;
-
 
         if (!profileResult.success)
             return Json(profileResult);
-            
+
+        var profile = profileResult.data!;
+
         // Criar claims do usuário
         var claims = new List<Claim>
         {

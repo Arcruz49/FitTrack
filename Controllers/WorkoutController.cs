@@ -24,7 +24,7 @@ public class WorkoutController : Controller
 
         var userIdClaim = User.FindFirst("UserId")?.Value;
 
-            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+        if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
 
         int userId = int.Parse(userIdClaim);
 
