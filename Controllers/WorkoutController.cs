@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FitTrack.Services.Interfaces;
 using FitTrack.Utils;
+using FitTrack.Models.Resources;
 
 namespace FitTrack.Controllers;
 
@@ -66,6 +67,17 @@ public class WorkoutController : BaseController
         if(!workoutResult.success) return Json(new {success = false, message = workoutResult.message});
 
         return Json(new {success = true, message = "", data = workoutResult.data});
+    }
+
+    [Authorize]
+    [HttpPost]
+    public JsonResult EditWorkout(WorkoutDTO workout)
+    {
+        var workoutResult = _workoutServices.EditWorkout(UserId, workout);
+
+        if(!workoutResult.success) return Json(new {success = false, message = workoutResult.message});
+
+        return Json(new {success = true, message = "Treino editado com sucesso", data = workout});
     }
 
 }

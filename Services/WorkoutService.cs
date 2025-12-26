@@ -109,4 +109,27 @@ public class WorkoutService : IWorkoutService
         return new RetornoGenerico<WorkoutDTO>{success = true, data = workout};
     }
 
+    public Retorno EditWorkout(int userId, WorkoutDTO workout)
+    {
+
+        var workoutOld = _db.UserWorkouts.Where(a => a.id == workout.id && a.userId == userId).FirstOrDefault();
+
+        if(workoutOld == null) return new Retorno{success = false, message = "Treino não encontrado"};
+
+        workoutOld.name = workout.name;
+        workoutOld.description = workout.description;
+
+        try
+        {
+            _db.SaveChanges();
+        }
+        catch(Exception ex)
+        {
+            return new Retorno{success = true, message = _util.ErrorMessage(ex)};
+        }
+
+        return new Retorno{success = true};
+    }
+
+
 }

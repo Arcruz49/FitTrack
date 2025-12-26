@@ -10,8 +10,8 @@
             <h1 class="text-3xl font-bold text-white">Meus Treinos</h1>
             <p class="text-slate-400 mt-1">Gerencie suas fichas de treino.</p>
         </div>
-        <button class="px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition font-bold flex items-center gap-2">
-            <i class="fa-solid fa-check"></i> Salvar Tudo
+        <button class="btn-save px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition font-bold flex items-center gap-2">
+            <i class="fa-solid fa-check"></i> Salvar
         </button>
     </div>
 
@@ -27,17 +27,20 @@
 
     <div class="glass-card bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8">
         
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b border-slate-700/50 pb-6">
             <div>
+                <input type="text" id="input-workout-id" value="" class="hidden">
+
                 <label class="block text-xs font-medium text-slate-400 mb-1">Identificador</label>
                 <div class="flex items-center gap-3">
                     <div id="display-letter" class="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold border border-emerald-500/20 text-xl">A</div>
-                    <input type="text" id="input-workout-name" value="Peito e Tríceps" class="w-full bg-slate-900 border-b-2 border-slate-700 focus:border-emerald-500 px-2 py-2 text-white text-lg font-bold focus:outline-none transition bg-transparent">
+                    <input type="text" id="input-workout-name" value="" class="w-full bg-slate-900 border-b-2 border-slate-700 focus:border-emerald-500 px-2 py-2 text-white text-lg font-bold focus:outline-none transition bg-transparent">
                 </div>
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-400 mb-1">Foco</label>
-                <input type="text" id="input-workout-desc" value="Foco em progressão de carga." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+                <input type="text" id="input-workout-desc" value="" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
             </div>
         </div>
 
@@ -72,7 +75,6 @@
 
     <div class="fixed inset-0 z-10 overflow-y-auto">
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <!-- Conteúdo do Modal -->
             <div class="relative transform overflow-hidden rounded-xl bg-slate-800 border border-slate-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
                 <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -110,11 +112,12 @@
                 const id = $(this).data('id');
                 
                 $('#display-letter').text(letter);
-                // GetWorkoutDetails(id); 
+                GetWorkoutDetails(id); 
 
                 $('#exercises-list')
                     .css('opacity', '0.4')
                     .animate({ opacity: 1 }, 200);
+
             });
 
             $('#workouts-container').on('click', '.btn-options', function(e) {
@@ -176,6 +179,32 @@
             $('#btn-close-modal, #modalBackdrop').on('click', function() {
                 $modal.fadeOut(200, function() {
                     $(this).addClass('hidden');
+                });
+            });
+
+            $(document).on('click', '.btn-save', function () {
+
+                const workout = {
+                    id: $('#input-workout-id').val(),
+                    name: $('#input-workout-name').val(),
+                    description: $('#input-workout-desc').val()
+                };
+                
+                $.ajax({
+                    url: '/Workout/EditWorkout',
+                    type: 'POST',
+                    data: { workout : workout},
+                    success: function (response) {
+                        if (response.success) {
+                            notyf.success(response.message);
+                            GetWorkouts();
+                        } else {
+                            notyf.error(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        notyf.error('Erro ao editar treino.');
+                    }
                 });
             });
 
@@ -267,6 +296,10 @@
 
                         btnNew.before(tabHtml);
                     });
+
+                    $('#input-workout-name').val(response.data[0].name);
+                    $('#input-workout-desc').val(response.data[0].description);
+                    $('#input-workout-id').val(response.data[0].id);
                 },
                 error: function (xhr) {
                     console.error(xhr.responseText);
@@ -275,20 +308,23 @@
         }
 
 
-        function GetWorkoutDetails() {
-            $('input-workout-name').val('');
-            $('input-workout-desc').val('');
+        function GetWorkoutDetails(id) {
+            $('#input-workout-name').val('');
+            $('#input-workout-desc').val('');
+            $('#input-workout-id').val('');
             
             $.ajax({
                 url: '/Workout/GetWorkoutDetails',
                 type: 'GET',
+                data: { id : id},
                 success: function (response) {
                     if (!response.success) {
                         notyf.error(response.message);
                         return;
                     }
-                const name = $('input-workout-name').val();
-                const desc = $('input-workout-desc').val();
+                    $('#input-workout-name').val(response.data.name);
+                    $('#input-workout-desc').val(response.data.description);
+                    $('#input-workout-id').val(response.data.id);
                     
                 },
                 error: function (xhr) {
