@@ -1,187 +1,71 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using FitTrack.Data;
+using FitTrack.Services.Interfaces;
 using FitTrack.Utils;
-using FitTrack.Models.Resources;
-using FitTrack.Models;
-using Microsoft.Extensions.WebEncoders.Testing;
 
 namespace FitTrack.Controllers;
 
-public class WorkoutController : Controller
+public class WorkoutController : BaseController
 {
     
-    private Context db;
-    public Util util = new Util();
-    public WorkoutController(Context context)
+    public readonly IWorkoutService _workoutServices;
+    public readonly Util _util;
+    public WorkoutController(IWorkoutService workoutServices, Util util)
     {
-        db = context;
+        _workoutServices = workoutServices;
+        _util = util;
     }
 
     [Authorize]
     public IActionResult Index()
     {
-
-        var userIdClaim = User.FindFirst("UserId")?.Value;
-
-        if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
-
-        int userId = int.Parse(userIdClaim);
-
-        var user = db.Users.Where(a => a.id == userId).Select(a => new UsersDTO
-        {
-            id = a.id,
-            name = a.name,
-            email = a.email,
-            bio = a.bio,
-            phoneNumber = util.FormatPhoneNumber(a.phoneNumber ?? ""),
-            profilePic = string.IsNullOrWhiteSpace(a.profilePic) ? Url.Content("~/images/default-pf.png"): Url.Content(a.profilePic),
-            creation_date = a.creation_date,
-            creation_date_string = util.FormatCreationDate(a.creation_date),
-        }).FirstOrDefault();
-
-
-        return View(user);
+        return View();
     }
 
     [Authorize]
     [HttpGet]
     public JsonResult GetWorkouts()
     {
-        try
-        {
-            var userIdClaim = User.FindFirst("UserId")?.Value;
+        var workoutsResult = _workoutServices.GetWorkoutsByUserId(UserId);
 
-            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+        if(!workoutsResult.success) return Json(new {success = false, message = "Erro ao carregar treinos"});
 
-            int userId = int.Parse(userIdClaim);
-
-            var workouts = db.UserWorkouts.Where(a => a.userId == userId).Select(a => new WorkoutDTO()
-            {
-                id = a.id,
-                name = a.name,
-                description = a.description,
-                letter = a.letter
-            }).ToList();
-
-            return Json(new {success = true, message = "", data = workouts});
-        }
-        catch(Exception ex)
-        {
-            return Json(new { success = false, message = util.ErrorMessage(ex)});
-        }
+        return Json(new {success = true, message = "", data = workoutsResult.data});
     }
 
     [Authorize]
     [HttpPost]
     public JsonResult CreateWorkout(string name = "")
     {
-        try
-        {
-            var userIdClaim = User.FindFirst("UserId")?.Value;
+        if(string.IsNullOrEmpty(name)) return Json(new { success = false, message = "Nome inválido" });
 
-            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+        var workoutCreateResult = _workoutServices.CreateWorkout(UserId, name);
 
-            int userId = int.Parse(userIdClaim);
+        if(!workoutCreateResult.success) return Json(new { success = false, message = workoutCreateResult.message });
 
-             var usedLetters = db.UserWorkouts
-            .Where(w => w.userId == userId)
-            .Select(w => w.letter.ToUpper())
-            .ToHashSet();
-
-            string nextLetter = "";
-
-            for (char c = 'A'; c <= 'Z'; c++)
-            {
-                if (!usedLetters.Contains(c.ToString()))
-                {
-                    nextLetter = c.ToString();
-                    break;
-                }
-            }
-
-            if (nextLetter == "")
-                return Json(new { success = false, message = "Limite máximo de treinos atingido (A–Z)" });
-
-
-            var workout = new UserWorkout()
-            {
-                userId = userId,
-                name = name,
-                // description = newWorkout.description,
-                description = "",
-                letter = nextLetter,
-            };
-
-            db.UserWorkouts.Add(workout);
-            db.SaveChanges();
-
-
-            return Json(new {success = true, message = "Treino criado com sucesso"});
-        }
-        catch(Exception ex)
-        {
-            return Json(new { success = false, message = util.ErrorMessage(ex)});
-        }
+        return Json(new {success = true, message = "Treino criado com sucesso"});
     }
 
     [Authorize]
     [HttpPost]
     public JsonResult DeleteWorkout(int id = 0)
     {
-        try
-        {
-            var userIdClaim = User.FindFirst("UserId")?.Value;
+        var workoutDeleteResult = _workoutServices.DeleteWorkout(UserId, id);
 
-            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+        if(!workoutDeleteResult.success) return Json(new { success = false, message = workoutDeleteResult.message });
 
-            int userId = int.Parse(userIdClaim);
-
-            var workout = db.UserWorkouts.Where(a => a.id == id && a.userId == userId).FirstOrDefault();
-
-            if(workout == null) return Json(new { success = false, message = "Treino não encontrado" });
-
-            db.UserWorkouts.Remove(workout);
-            db.SaveChanges();
-
-            return Json(new {success = true, message = "Treino excluído com sucesso"});
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false , message = util.ErrorMessage(ex)});
-        }        
+        return Json(new {success = true, message = "Treino excluído com sucesso"});
     }
 
     [Authorize]
     [HttpGet]
     public JsonResult GetWorkoutDetails(int id = 0)
     {
-        try
-        {
-            var userIdClaim = User.FindFirst("UserId")?.Value;
+        var workoutResult = _workoutServices.GetWorkoutById(UserId, id);
 
-            if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
+        if(!workoutResult.success) return Json(new {success = false, message = workoutResult.message});
 
-            int userId = int.Parse(userIdClaim);
-
-            var workout = db.UserWorkouts.Where(a => a.id == id && a.userId == userId).Select(a => new WorkoutDTO
-            {
-                id = a.id,
-                name = a.name,
-                description = a.description,
-                letter = a.letter
-            }).FirstOrDefault();
-
-            if(workout == null) return Json(new { success = false, message = "Treino não encontrado" });
-
-
-
-            return Json(new {success = true, message = "", data = workout});
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false , message = util.ErrorMessage(ex)});
-        }        
+        return Json(new {success = true, message = "", data = workoutResult.data});
     }
 
 }

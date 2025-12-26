@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using FitTrack.Models;
 using FitTrack.Utils;
-using FitTrack.Data;
-using Microsoft.AspNetCore.Identity;
+using FitTrack.Services.Interfaces;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-namespace FitTrack.Controllers;
 
-public class LoginController : Controller
+namespace FitTrack.Controllers;
+public class LoginController : BaseController
 {
     private readonly IAuthService _authService;
     private readonly Util _util;
@@ -27,7 +25,6 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<JsonResult> Login(string email = "", string password = "")
     {
-    
         var authResult = _authService.Authenticate(email, password);
 
         if (!authResult.success)
@@ -71,7 +68,6 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<JsonResult> Register(string name = "", string email = "", string password = "", string confirmPassword = "")
     {
-
         var registerResult = _authService.Register(name, email, password, confirmPassword);
 
         
@@ -102,7 +98,6 @@ public class LoginController : Controller
         );
 
         return Json(new { success = true, message = "Registro realizado com sucesso" });
-    
     }
 
     [HttpGet]

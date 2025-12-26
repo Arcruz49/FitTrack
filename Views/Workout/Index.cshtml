@@ -273,6 +273,29 @@
                 }
             });
         }
+
+
+        function GetWorkoutDetails() {
+            $('input-workout-name').val('');
+            $('input-workout-desc').val('');
+            
+            $.ajax({
+                url: '/Workout/GetWorkoutDetails',
+                type: 'GET',
+                success: function (response) {
+                    if (!response.success) {
+                        notyf.error(response.message);
+                        return;
+                    }
+                const name = $('input-workout-name').val();
+                const desc = $('input-workout-desc').val();
+                    
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
     </script>
 
     <style>

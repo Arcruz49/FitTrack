@@ -1,21 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using FitTrack.Models;
 using Microsoft.AspNetCore.Authorization;
-using FitTrack.Data;
 using FitTrack.Utils;
 using System.Security.Claims;
 using FitTrack.Models.Resources;
+using FitTrack.Services.Interfaces;
 
 namespace FitTrack.Controllers;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     
-    private Context db;
-    public Util util = new Util();
-    public HomeController(Context context)
+    private readonly IHomeService _homeService;
+    private readonly Util _util;
+
+    public HomeController(IHomeService homeService, Util util)
     {
-        db = context;
+        _homeService = homeService;
+        _util = util;
     }
 
     [Authorize]
@@ -39,182 +41,79 @@ public class HomeController : Controller
     public JsonResult CreateExercise(string name = "", decimal weight = 0, int reps = 0, int series = 0, int rest = 0, string obs = "",
      int order = 0)
     {
-        try
-        {
-            #region validacoes
+        #region validacoes
 
-            if(name == "") return Json(new {success = false, message = "Nome inválido"});
-            if(weight == 0) return Json(new {success = false, message = "Nome inválido"});
-            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
-            if(userId == 0) return Json(new {success = false, message = "Usuário inválido, faça login novamente"});
+        if(name == "") return Json(new {success = false, message = "Nome inválido"});
+        if(weight == 0) return Json(new {success = false, message = "Nome inválido"});
 
-            #endregion
+        #endregion
 
+        var createExerciseResult = _homeService.CreateExercise(UserId, name, weight, reps, series, rest, obs, order);
 
-            var exercise = new Exercises()
-            {
-                name = name,
-                userId = userId,
-                weight = weight,
-                reps = reps,
-                series = series,
-                rest = rest,
-                obs = obs,
-            };
-
-            db.Exercises.Add(exercise);
-            db.SaveChanges();
-
-            return Json(new {success = true, message = "Exercício criado com sucesso.", data = exercise});
-
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false, message = util.ErrorMessage(ex)});
-        }
+        if(!createExerciseResult.success) return Json(new {success = false, message = createExerciseResult.message});
+        
+        return Json(new {success = true, message = "Exercício criado com sucesso.", data = createExerciseResult.data});
     }
 
     [Authorize]
     [HttpGet]
     public JsonResult GetExercises()
     {
-        try
-        {
-            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
-            
-            var exercicios = db.Exercises.Where(a => a.userId == userId)
-            .Select(a => new
-            {
-                a.id,
-                a.name,
-                a.weight,
-                a.reps,
-                a.series,
-                a.creation_date,
-                a.order
-            }).OrderBy(a => a.order).ToList();
+        var exercisesResult = _homeService.GetExercisesByUserId(UserId);
 
-            return Json(new {success = true, message = "", data = exercicios});
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false, message = util.ErrorMessage(ex)});
-        }
+        if(!exercisesResult.success) return Json(new {success = false, message = exercisesResult.message});
+
+        return Json(new {success = true, message = "", data = exercisesResult.data});
     }
 
     [Authorize]
     [HttpGet]
     public JsonResult GetUserEmail()
     {
-        try
-        {
-            return Json(new {success = true, data = User.FindFirst("Email")?.Value ?? ""});
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
-        }
-
+        return Json(new {success = true, data = User.FindFirst("Email")?.Value ?? ""});  
     }
 
     [Authorize]
     [HttpGet]
     public JsonResult GetExercicioById(int id = 0)
     {
-        try
-        {
-            if(id == 0) return Json(new {success = false, message = ""});
+        var exercicioResult = _homeService.GetExercicioById(UserId, id);
 
-            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
+        if(!exercicioResult.success) return Json(new {success = false, message = "Exercício não encontrado", data = ""});
 
-            var exercicio = db.Exercises
-                .Where(a => a.id == id && a.userId == userId)
-                .FirstOrDefault();
-
-            if(exercicio == null) return Json(new {success = false, message = "Exercício não encontrado", data = ""});
-
-            return Json(new {success = true, data = exercicio});
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
-        }
-
+        return Json(new {success = true, data = exercicioResult.data});
     }
 
     [Authorize]
     [HttpPost]
     public JsonResult DeleteExerciseById(int id = 0)
     {
-        try
-        {
-            int userId = Convert.ToInt32(User.FindFirst("UserId")?.Value);
-            var exercicio = db.Exercises
-                .Where(a => a.id == id && a.userId == userId)
-                .FirstOrDefault();
+        var deleteExerciseResult = _homeService.DeleteExerciseById(UserId, id);
+        
+        if(!deleteExerciseResult.success) return Json(new {success = false, message = deleteExerciseResult.message});
 
-            if(exercicio == null) return Json(new {success = false, message = "Exercício não encontrado", data = ""});
-            
-            db.Exercises.Remove(exercicio);
-            db.SaveChanges();
-
-            return Json(new {success = true, message = "Exercício excluído com sucesso", data = ""});
-
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
-        }
+        return Json(new {success = true, message = "Exercício excluído com sucesso"});
     }
 
     [Authorize]
     [HttpPost]
     public JsonResult EditExerciseById([FromBody] Exercises exerciseNew)
     {
-        try
-        {
+        #region  validacoes
 
-            var userIdClaim = User.FindFirst("UserId");
-            if (userIdClaim == null)
-                return Json(new { success = false, message = "Usuário não autenticado" });
+        if(exerciseNew.name == null || exerciseNew.name == "undefined" || exerciseNew.name == "")
+            return Json(new {success = false, message = "Nome inválido"});
 
-            int userId = int.Parse(userIdClaim.Value);
+        if(exerciseNew.id == 0)
+            return Json(new {success = false, message = "Exercício inválido"});
 
-            #region  validacoes
+        #endregion
 
-            if(exerciseNew.name == null || exerciseNew.name == "undefined" || exerciseNew.name == "")
-                return Json(new {success = false, message = "Nome inválido"});
+        var exercicioResult = _homeService.EditExerciseById(UserId, exerciseNew);
+        
+        if(!exercicioResult.success) return Json(new {success = false, message = exercicioResult.message});
 
-            if(exerciseNew.id == 0)
-                return Json(new {success = false, message = "Exercício inválido"});
-
-            #endregion
-
-
-            var exercicioOld = db.Exercises
-                .Where(a => a.id == exerciseNew.id && a.userId == userId)
-                .FirstOrDefault();
-
-            if(exercicioOld == null) return Json(new {success = false, message = "Exercício não encontrado"});
-            
-            exercicioOld.name = exerciseNew.name;
-            exercicioOld.weight = exerciseNew.weight;
-            exercicioOld.reps = exerciseNew.reps;
-            exercicioOld.series = exerciseNew.series;
-            exercicioOld.obs = exerciseNew.obs;
-            exercicioOld.rest = exerciseNew.rest;
-
-            db.SaveChanges();
-            
-            return Json(new {success = true, message = "Exercício atualizado com sucesso"});
-
-
-        }
-        catch(Exception ex)
-        {
-            return Json(new {success = false, message = util.ErrorMessage(ex), data = ""});
-        }
-
+        return Json(new {success = true, message = "Exercício atualizado com sucesso"});
     }  
 
 
@@ -222,40 +121,14 @@ public class HomeController : Controller
     [HttpPost]
     public JsonResult UpdateExerciseOrder([FromBody] List<ExerciseOrder> exercises)
     {
-        try
-        {
-            if (exercises == null || exercises.Count == 0)
-                return Json(new { success = false, message = "Lista vazia" });
+        if (exercises == null || exercises.Count == 0)
+            return Json(new { success = false, message = "Lista vazia" });
 
-            var userIdClaim = User.FindFirst("UserId");
-            if (userIdClaim == null)
-                return Json(new { success = false, message = "Usuário não autenticado" });
+        var exerciseOrderResult = _homeService.UpdateExerciseOrder(UserId, exercises);
 
-            int userId = int.Parse(userIdClaim.Value);
+        if(!exerciseOrderResult.success) return Json(new { success = false, message = exerciseOrderResult.message});
 
-            var ids = exercises.Select(e => e.id).ToList();
-
-            var exerciciosDb = db.Exercises
-                .Where(e => ids.Contains(e.id) && e.userId == userId)
-                .ToList();
-
-            if (exerciciosDb.Count != exercises.Count)
-                return Json(new { success = false, message = "Exercício inválido ou sem permissão" });
-
-            foreach (var exercicio in exerciciosDb)
-            {
-                var newOrder = exercises.First(e => e.id == exercicio.id).order;
-                exercicio.order = newOrder;
-            }
-
-            db.SaveChanges();
-
-            return Json(new { success = true, message = "Ordem atualizada com sucesso" });
-        }
-        catch (Exception ex)
-        {
-            return Json(new { success = false, message = util.ErrorMessage(ex) });
-        }
+        return Json(new { success = true, message = "Ordem atualizada com sucesso" });
     }
 
 }

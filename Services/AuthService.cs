@@ -2,7 +2,9 @@ using FitTrack.Data;
 using FitTrack.Models;
 using FitTrack.Models.Resources;
 using Microsoft.AspNetCore.Identity;
+using FitTrack.Services.Interfaces;
 
+namespace FitTrack.Services;
 public class AuthService : IAuthService
 {
     private readonly Context _db;

@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using FitTrack.Data;
+using FitTrack.Services.Interfaces;
 using FitTrack.Utils;
 using FitTrack.Models.Resources;
-using FitTrack.Models;
 
 namespace FitTrack.Controllers;
 
-public class UserController : Controller
+public class UserController : BaseController
 {
     private readonly IUserService _userService;
     private readonly Util _util;
@@ -20,14 +19,7 @@ public class UserController : Controller
     [Authorize]
     public IActionResult Index()
     {
-
-        var userIdClaim = User.FindFirst("UserId")?.Value;
-
-        if (string.IsNullOrEmpty(userIdClaim)) return Json(new { success = false, message = "Usuário não autenticado" });
-
-        int userId = int.Parse(userIdClaim);
-
-        var userResult = _userService.GetUserById(userId);
+        var userResult = _userService.GetUserById(UserId);
 
         if(!userResult.success) return Json(new { success = false, message = userResult.message });
 
@@ -39,7 +31,6 @@ public class UserController : Controller
     [HttpPost]
     public JsonResult SaveProfileInfo([FromBody] UsersDTO ProfileInfo)
     {
-
         #region validacoes
         
         if(string.IsNullOrEmpty(ProfileInfo.name)) return Json(new {success = false, message = "Nome inválido"});
@@ -47,14 +38,7 @@ public class UserController : Controller
         
         #endregion
 
-        var userIdClaim = User.FindFirst("UserId")?.Value;
-
-        if (string.IsNullOrEmpty(userIdClaim))
-            return Json(new { success = false, message = "Usuário não autenticado" });
-
-        int userId = int.Parse(userIdClaim);
-
-        var saveProfileResult = _userService.SaveProfileInfo(userId, ProfileInfo);
+        var saveProfileResult = _userService.SaveProfileInfo(UserId, ProfileInfo);
         
         if(!saveProfileResult.success) return Json(new { success = false, message = saveProfileResult.message});
 
@@ -68,14 +52,7 @@ public class UserController : Controller
         if (profilePic == null || profilePic.Length == 0)
             return Json(new { success = false, message = "Imagem inválida" });
 
-        var userIdClaim = User.FindFirst("UserId")?.Value;
-
-        if (string.IsNullOrEmpty(userIdClaim))
-            return Json(new { success = false, message = "Usuário não autenticado" });
-        
-        int userId = int.Parse(userIdClaim);
-
-        var uploadProfilePicResult = await _userService.UploadProfilePictureAsync(userId, profilePic);
+        var uploadProfilePicResult = await _userService.UploadProfilePictureAsync(UserId, profilePic);
 
         if(!uploadProfilePicResult.success) return Json(new { success = false, message = uploadProfilePicResult.message});
 

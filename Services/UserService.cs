@@ -2,6 +2,10 @@ using FitTrack.Data;
 using FitTrack.Models;
 using FitTrack.Models.Resources;
 using FitTrack.Utils;
+using FitTrack.Services.Interfaces;
+
+
+namespace FitTrack.Services;
 public class UserService : IUserService
 {
 
@@ -118,7 +122,9 @@ public class UserService : IUserService
             await profilePic.CopyToAsync(stream);
         }
 
-        var user = _db.Users.First(x => x.id == userId);
+        var user = _db.Users.FirstOrDefault(x => x.id == userId);
+        if (user == null)
+            return new Retorno { success = false, message = "Usuário não identificado" };
 
         if (!string.IsNullOrWhiteSpace(user.profilePic))
         {
@@ -139,7 +145,7 @@ public class UserService : IUserService
         try
         {
             _db.SaveChanges();
-            return new Retorno { success = true, message = "Imagem atualizada" };
+            return new Retorno { success = true, message = "" };
         }
         catch (Exception ex)
         {

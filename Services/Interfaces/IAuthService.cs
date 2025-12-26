@@ -1,6 +1,7 @@
 using FitTrack.Models;
 using FitTrack.Models.Resources;
 
+namespace FitTrack.Services.Interfaces;
 public interface IAuthService
 {
     RetornoGenerico<Users> Authenticate(string email, string password);
