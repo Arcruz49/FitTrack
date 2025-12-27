@@ -14,10 +14,14 @@ namespace FitTrack.Models
         public int? rest { get; set; }
         public string? obs { get; set; }
         public int? order { get; set; }
+        public int workoutId { get; set; }
         public DateTime creation_date { get; set; }
 
         [ForeignKey("userId")]
         public Users User { get; set; }
+
+        [ForeignKey("workoutId")]
+        public UserWorkout Workout { get; set; }
 
     }
 }

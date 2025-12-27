@@ -16,7 +16,7 @@ builder.Services.AddDbContext<Context>(options =>
 builder.Services.AddScoped<Util>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 
 

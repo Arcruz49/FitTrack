@@ -5,19 +5,26 @@ using FitTrack.Utils;
 using FitTrack.Services.Interfaces;
 
 namespace FitTrack.Services;
-public class HomeService : IHomeService
+public class ExerciseService : IExerciseService
 {
     private readonly Context _db;
     private readonly Util _util;
-    public HomeService(Context db, Util util)
+    public ExerciseService(Context db, Util util)
     {
         _db = db;
         _util = util;
     }
 
     public RetornoGenerico<Exercises> CreateExercise(int userId, string name, decimal weight, int reps, int series, int rest, string obs,
-     int order)
+     int order, int workoutId)
     {
+
+        bool userExists = _db.Users.Any(u => u.id == userId);
+        if(!userExists) return new RetornoGenerico<Exercises>{success = false, message = "Usuário não encontrado"}; 
+
+        bool workoutExists = _db.UserWorkouts.Any(u => u.id == workoutId);
+        if(!userExists) return new RetornoGenerico<Exercises>{success = false, message = "Treino não encontrado"}; 
+
         var exercise = new Exercises()
             {
                 name = name,
@@ -27,6 +34,7 @@ public class HomeService : IHomeService
                 series = series,
                 rest = rest,
                 obs = obs,
+                workoutId = workoutId,
             };
 
         try
@@ -45,6 +53,7 @@ public class HomeService : IHomeService
 
     public RetornoGenerico<List<ExerciseDTO>> GetExercisesByUserId(int userId)
     {
+        
         var exercicios = _db.Exercises.Where(a => a.userId == userId)
             .Select(a => new ExerciseDTO
             {
@@ -157,6 +166,23 @@ public class HomeService : IHomeService
         {
             return new Retorno{success = false, message = _util.ErrorMessage(ex)};
         }
+    }
+
+    public RetornoGenerico<List<ExerciseDTO>> GetExercisesByWorkoutId(int userId, int workoutId)
+    {
+        var exercicios = _db.Exercises.Where(a => a.userId == userId && a.workoutId == workoutId)
+            .Select(a => new ExerciseDTO
+            {
+                id = a.id,
+                name = a.name,
+                weight = a.weight,
+                reps = a.reps,
+                series = a.series,
+                creation_date = a.creation_date,
+                order = a.order
+            }).OrderBy(a => a.order).ToList();
+        
+        return new RetornoGenerico<List<ExerciseDTO>>{success = true, data = exercicios};
     }
 
 

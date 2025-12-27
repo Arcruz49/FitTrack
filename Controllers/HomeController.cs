@@ -11,12 +11,12 @@ namespace FitTrack.Controllers;
 public class HomeController : BaseController
 {
     
-    private readonly IHomeService _homeService;
+    private readonly IExerciseService _exerciseService;
     private readonly Util _util;
 
-    public HomeController(IHomeService homeService, Util util)
+    public HomeController(IExerciseService homeService, Util util)
     {
-        _homeService = homeService;
+        _exerciseService = homeService;
         _util = util;
     }
 
@@ -39,16 +39,17 @@ public class HomeController : BaseController
     [Authorize]
     [HttpPost]
     public JsonResult CreateExercise(string name = "", decimal weight = 0, int reps = 0, int series = 0, int rest = 0, string obs = "",
-     int order = 0)
+     int order = 0, int workoutId = 0)
     {
         #region validacoes
 
         if(name == "") return Json(new {success = false, message = "Nome inválido"});
         if(weight == 0) return Json(new {success = false, message = "Nome inválido"});
+        if(workoutId == 0) return Json(new {success = false, message = "Treino inválido"});
 
         #endregion
 
-        var createExerciseResult = _homeService.CreateExercise(UserId, name, weight, reps, series, rest, obs, order);
+        var createExerciseResult = _exerciseService.CreateExercise(UserId, name, weight, reps, series, rest, obs, order, workoutId);
 
         if(!createExerciseResult.success) return Json(new {success = false, message = createExerciseResult.message});
         
@@ -59,7 +60,7 @@ public class HomeController : BaseController
     [HttpGet]
     public JsonResult GetExercises()
     {
-        var exercisesResult = _homeService.GetExercisesByUserId(UserId);
+        var exercisesResult = _exerciseService.GetExercisesByUserId(UserId);
 
         if(!exercisesResult.success) return Json(new {success = false, message = exercisesResult.message});
 
@@ -77,7 +78,7 @@ public class HomeController : BaseController
     [HttpGet]
     public JsonResult GetExercicioById(int id = 0)
     {
-        var exercicioResult = _homeService.GetExercicioById(UserId, id);
+        var exercicioResult = _exerciseService.GetExercicioById(UserId, id);
 
         if(!exercicioResult.success) return Json(new {success = false, message = "Exercício não encontrado", data = ""});
 
@@ -88,7 +89,7 @@ public class HomeController : BaseController
     [HttpPost]
     public JsonResult DeleteExerciseById(int id = 0)
     {
-        var deleteExerciseResult = _homeService.DeleteExerciseById(UserId, id);
+        var deleteExerciseResult = _exerciseService.DeleteExerciseById(UserId, id);
         
         if(!deleteExerciseResult.success) return Json(new {success = false, message = deleteExerciseResult.message});
 
@@ -109,7 +110,7 @@ public class HomeController : BaseController
 
         #endregion
 
-        var exercicioResult = _homeService.EditExerciseById(UserId, exerciseNew);
+        var exercicioResult = _exerciseService.EditExerciseById(UserId, exerciseNew);
         
         if(!exercicioResult.success) return Json(new {success = false, message = exercicioResult.message});
 
@@ -124,7 +125,7 @@ public class HomeController : BaseController
         if (exercises == null || exercises.Count == 0)
             return Json(new { success = false, message = "Lista vazia" });
 
-        var exerciseOrderResult = _homeService.UpdateExerciseOrder(UserId, exercises);
+        var exerciseOrderResult = _exerciseService.UpdateExerciseOrder(UserId, exercises);
 
         if(!exerciseOrderResult.success) return Json(new { success = false, message = exerciseOrderResult.message});
 

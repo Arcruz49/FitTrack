@@ -4,96 +4,133 @@
 
 <div class="max-w-[1400px] mx-auto w-full p-4 sm:p-6 lg:p-8 relative z-0">
 
-    <!-- Header -->
     <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-white">Meus Treinos</h1>
             <p class="text-slate-400 mt-1">Gerencie suas fichas de treino.</p>
         </div>
-        <button class="btn-save px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 transition font-bold flex items-center gap-2">
-            <i class="fa-solid fa-check"></i> Salvar
-        </button>
     </div>
 
-
-    <div id="workouts-container" class="flex gap-4 overflow-x-auto pb-4 mb-6 custom-scrollbar snap-x">
-        
+    <div id="workouts-container" class="flex gap-4 overflow-x-auto pb-4 pt-4 mb-6 custom-scrollbar snap-x">
         <button id="btn-create-new" type="button" class="min-w-[160px] snap-start border-2 border-dashed border-slate-700 rounded-xl p-4 flex flex-col items-center justify-center text-slate-500 hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-slate-800/50 transition gap-2">
             <i class="fa-solid fa-plus text-xl"></i>
             <span class="font-medium text-sm">Novo Treino</span>
         </button>
-
     </div>
 
     <div class="glass-card bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8">
         
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border-b border-slate-700/50 pb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 border-b border-slate-700/50 pb-6">
             <div>
-                <input type="text" id="input-workout-id" value="" class="hidden">
-
-                <label class="block text-xs font-medium text-slate-400 mb-1">Identificador</label>
+                <input type="hidden" id="input-workout-id" value="">
+                <label class="block text-xs font-medium text-slate-400 mb-1">Identificador & Nome</label>
                 <div class="flex items-center gap-3">
-                    <div id="display-letter" class="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold border border-emerald-500/20 text-xl">A</div>
-                    <input type="text" id="input-workout-name" value="" class="w-full bg-slate-900 border-b-2 border-slate-700 focus:border-emerald-500 px-2 py-2 text-white text-lg font-bold focus:outline-none transition bg-transparent">
+                    <div id="display-letter" class="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold border border-emerald-500/20 text-xl shrink-0">A</div>
+                    <input type="text" id="input-workout-name" class="w-full bg-slate-900 border-b-2 border-slate-700 focus:border-emerald-500 px-2 py-2 text-white text-lg font-bold focus:outline-none transition bg-transparent placeholder-slate-600" placeholder="Nome do Treino">
                 </div>
             </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-400 mb-1">Foco</label>
-                <input type="text" id="input-workout-desc" value="" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+            <div class="flex flex-col justify-end">
+                <label class="block text-xs font-medium text-slate-400 mb-1">Foco / Descrição</label>
+                <div class="flex gap-2">
+                    <input type="text" id="input-workout-desc" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: Hipertrofia de Pernas">
+                    <button class="btn-save-workout bg-slate-700 hover:bg-emerald-600 text-white px-4 rounded-lg transition" title="Salvar Nome/Descrição">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="mb-6 relative">
-            <div class="relative group">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500"><i class="fa-solid fa-magnifying-glass"></i></div>
-                <input type="text" placeholder="Pesquisar exercício..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition">
-                <button class="absolute right-2 top-2 bottom-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 rounded-lg font-medium text-sm transition">Add</button>
-            </div>
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-bold text-white">Exercícios</h3>
+            <button id="btn-open-exercise-modal" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Adicionar Exercício
+            </button>
         </div>
 
-        <div id="exercises-list" class="space-y-3">
-            <div class="bg-slate-900/40 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
-                <div class="flex-1 w-full text-center sm:text-left">
-                    <h4 class="font-bold text-white text-lg">Supino Reto</h4>
-                    <span class="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Peito</span>
-                </div>
-                <div class="flex items-center gap-2 bg-slate-900 rounded-lg p-1 border border-slate-700">
-                    <input type="number" value="4" class="w-12 bg-transparent text-center text-white text-sm font-bold focus:outline-none border-b border-transparent focus:border-emerald-500" title="Séries">
-                    <span class="text-slate-600">x</span>
-                    <input type="number" value="12" class="w-12 bg-transparent text-center text-white text-sm font-bold focus:outline-none border-b border-transparent focus:border-emerald-500" title="Reps">
-                </div>
-                <button class="text-slate-500 hover:text-red-500 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
+        <div id="exercises-list" class="space-y-3 min-h-[100px]">
+            <p class="text-slate-500 text-center py-8 italic">Selecione um treino para ver os exercícios.</p>
         </div>
 
     </div>
 </div>
 
 <div id="newWorkoutModal" class="hidden fixed inset-0 z-[9999]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity" id="modalBackdrop"></div>
-
+    <div class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity modal-backdrop"></div>
     <div class="fixed inset-0 z-10 overflow-y-auto">
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div class="relative transform overflow-hidden rounded-xl bg-slate-800 border border-slate-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
+                
                 <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-folder-plus text-emerald-500"></i> Criar Novo Treino
                     </h3>
-                    <form id="createForm" class="space-y-4">
-                        @* <div>
-                            <label class="block text-xs text-slate-400 mb-1">Letra</label>
-                            <input type="text" placeholder="D" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none">
-                        </div> *@
+                    <form>
                         <div>
-                            <label class="block text-xs text-slate-400 mb-1">Nome</label>
-                            <input id="newName" type="text" placeholder="Ex: Cardio e Abdômen" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none">
+                            <label class="block text-xs text-slate-400 mb-1">Nome do Treino</label>
+                            <input id="newName" type="text" placeholder="Ex: Costas e Bíceps" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:outline-none transition">
                         </div>
                     </form>
                 </div>
+
                 <div class="bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2 border-t border-slate-700">
-                    <button id="add-workout-btn" type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 sm:w-auto">Criar</button>
-                    <button type="button" id="btn-close-modal" class="mt-3 inline-flex w-full justify-center rounded-lg bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 shadow-sm ring-1 ring-inset ring-slate-600 hover:bg-slate-600 sm:mt-0 sm:w-auto">Cancelar</button>
+                    <button id="add-workout-btn" type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 sm:w-auto transition">Criar</button>
+                    <button type="button" class="btn-close-modal mt-3 inline-flex w-full justify-center rounded-lg bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 shadow-sm hover:bg-slate-600 sm:mt-0 sm:w-auto transition">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addExerciseModal" class="hidden fixed inset-0 z-[9999]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm transition-opacity modal-backdrop"></div>
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-xl bg-slate-800 border border-slate-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                
+                <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-dumbbell text-emerald-500"></i> Novo Exercício
+                    </h3>
+                    
+                    <form id="form-exercise-modal" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Nome do Exercício</label>
+                            <input type="text" id="modal-ex-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-emerald-500 focus:outline-none transition placeholder-slate-600" placeholder="Ex: Supino Reto">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Carga (kg)</label>
+                                <input type="number" id="modal-ex-weight" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Séries</label>
+                                <input type="number" id="modal-ex-series" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition" placeholder="3">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Repetições</label>
+                                <input type="number" id="modal-ex-reps" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition" placeholder="12">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Descanso (min)</label>
+                                <input type="number" id="modal-ex-rest" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition" placeholder="2">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Observações (Opcional)</label>
+                            <textarea id="modal-ex-obs" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:border-emerald-500 focus:outline-none transition h-20 resize-none" placeholder="Ex: Drop-set na última série"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2 border-t border-slate-700">
+                    <button id="btn-confirm-add-exercise" type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-500 sm:w-auto transition">
+                        Adicionar
+                    </button>
+                    <button type="button" class="btn-close-modal mt-3 inline-flex w-full justify-center rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-bold text-slate-300 shadow-sm hover:bg-slate-600 sm:mt-0 sm:w-auto transition">
+                        Cancelar
+                    </button>
                 </div>
             </div>
         </div>
@@ -104,268 +141,267 @@
     <script>
         $(document).ready(function() {
             
+            GetWorkouts();
+
             $('#workouts-container').on('click', '.workout-tab', function () {
                 $('.workout-tab').removeClass('active');
                 $(this).addClass('active');
 
                 const letter = $(this).data('letter');
                 const id = $(this).data('id');
+                const name = $(this).find('.tab-title').text().trim();
+                const desc = $(this).find('p').text().trim();
                 
                 $('#display-letter').text(letter);
-                GetWorkoutDetails(id); 
+                $('#input-workout-id').val(id);
+                $('#input-workout-name').val(name);
+                $('#input-workout-desc').val(desc);
 
-                $('#exercises-list')
-                    .css('opacity', '0.4')
-                    .animate({ opacity: 1 }, 200);
-
+                LoadExercisesForWorkout(id);
             });
 
-            $('#workouts-container').on('click', '.btn-options', function(e) {
-                e.stopPropagation();
-                
-                $('.dropdown-menu').not($(this).next()).addClass('hidden');
-                
-                const menu = $(this).next('.dropdown-menu');
-                menu.toggleClass('hidden');
+            const $exModal = $('#addExerciseModal');
+
+            $('#btn-open-exercise-modal').on('click', function() {
+                const workoutId = $('#input-workout-id').val();
+                if(!workoutId) {
+                    notyf.error("Selecione um treino primeiro.");
+                    return;
+                }
+                $('#form-exercise-modal')[0].reset();
+                $exModal.removeClass('hidden').fadeIn(200);
             });
 
-            $(document).on('click', function() {
-                $('.dropdown-menu').addClass('hidden');
-            });
+            $('#btn-confirm-add-exercise').on('click', function() {
+                const workoutId = $('#input-workout-id').val();
+                const name = $('#modal-ex-name').val();
 
-            $('#workouts-container').on('click', '.btn-delete-workout', async function(e) {
-                e.stopPropagation(); 
-                const btn = $(this);
-                const id = btn.data('id');
-                const card = btn.closest('.workout-tab');
+                if(!name) {
+                    notyf.error("O nome do exercício é obrigatório.");
+                    return;
+                }
 
-                const confirmed = await showConfirm(
-                    "Excluir Treino?", 
-                    "Você tem certeza? Todos os exercícios deste treino também serão apagados."
-                );
-
-                if (!confirmed) return;
-
-                $.ajax({
-                    url: '/Workout/DeleteWorkout', 
-                    type: 'POST',
-                    data: { id: id },
-                    success: function (response) {
-                        if (response.success) {
-                            notyf.success(response.message);
-                            card.animate({ width: 0, opacity: 0, margin: 0, padding: 0 }, 300, function(){
-                                card.remove();
-                                if(card.hasClass('active')) {
-                                    $('.workout-tab').first().click();
-                                }
-                            });
-                        } else {
-                            notyf.error(response.message);
-                        }
-                    },
-                    error: function (xhr) {
-                        notyf.error('Erro ao deletar treino.');
-                    }
-                });
-            });
-
-            const $modal = $('#newWorkoutModal');
-
-            $('#btn-create-new').on('click', function(e) {
-                e.preventDefault();
-                $modal.removeClass('hidden').fadeIn(200);
-            });
-
-            $('#btn-close-modal, #modalBackdrop').on('click', function() {
-                $modal.fadeOut(200, function() {
-                    $(this).addClass('hidden');
-                });
-            });
-
-            $(document).on('click', '.btn-save', function () {
-
-                const workout = {
-                    id: $('#input-workout-id').val(),
-                    name: $('#input-workout-name').val(),
-                    description: $('#input-workout-desc').val()
+                const exerciseData = {
+                    workoutId: workoutId,
+                    name: name,
+                    weight: $('#modal-ex-weight').val(),
+                    series: $('#modal-ex-series').val(),
+                    reps: $('#modal-ex-reps').val(),
+                    rest: $('#modal-ex-rest').val(),
+                    obs: $('#modal-ex-obs').val()
                 };
-                
+
                 $.ajax({
-                    url: '/Workout/EditWorkout',
+                    url: '/Workout/CreateExercise',
                     type: 'POST',
-                    data: { workout : workout},
-                    success: function (response) {
-                        if (response.success) {
+                    data: exerciseData,
+                    success: function(response) {
+                        if(response.success) {
                             notyf.success(response.message);
-                            GetWorkouts();
+                            $exModal.fadeOut(200, function(){ $(this).addClass('hidden'); });
+                            LoadExercisesForWorkout(workoutId);
                         } else {
                             notyf.error(response.message);
                         }
                     },
-                    error: function (xhr) {
-                        notyf.error('Erro ao editar treino.');
-                    }
+                    error: function() { notyf.error("Erro ao adicionar exercício."); }
                 });
             });
 
-            $(document).on('click', '#add-workout-btn', function () {
-                let newName = $('#newName').val()
-
+            const $workoutModal = $('#newWorkoutModal');
+            $('#btn-create-new').on('click', function(e) { e.preventDefault(); $workoutModal.removeClass('hidden').fadeIn(200); });
+            
+            $('#add-workout-btn').on('click', function () {
+                let newName = $('#newName').val();
                 $.ajax({
                     url: '/Workout/CreateWorkout',
                     type: 'POST',
                     data: { name : newName},
                     success: function (response) {
                         if (response.success) {
-                            $('#newWorkoutModal').fadeOut(200, function() { $(this).addClass('hidden'); });
+                            $workoutModal.fadeOut(200, function(){ $(this).addClass('hidden'); });
                             $('#newName').val(''); 
-                            GetWorkouts();
+                            GetWorkouts(false);
                             notyf.success(response.message);
-                        } else {
-                            notyf.error(response.message);
-                        }
-                    },
-                    error: function (xhr) {
-                        notyf.error('Erro ao criar treino.');
+                        } else { notyf.error(response.message); }
                     }
                 });
             });
 
-            GetWorkouts();
+
+            $('.btn-close-modal, .modal-backdrop').on('click', function() {
+                $('.fixed.z-\\[9999\\]').fadeOut(200, function() {
+                    $(this).addClass('hidden');
+                });
+            });
+
+            $('.btn-save-workout').on('click', function () {
+                const workout = {
+                    id: $('#input-workout-id').val(),
+                    name: $('#input-workout-name').val(),
+                    description: $('#input-workout-desc').val()
+                };
+                $.ajax({
+                    url: '/Workout/EditWorkout',
+                    type: 'POST',
+                    data: { workout : workout},
+                    success: function (response) {
+                        if (response.success) {
+                            notyf.success("Informações salvas!");
+                            GetWorkouts(false);
+                        } else { notyf.error(response.message); }
+                    }
+                });
+            });
+
+            $('#workouts-container').on('click', '.btn-options', function(e) {
+                e.stopPropagation();
+                $('.dropdown-menu').not($(this).next()).addClass('hidden');
+                $(this).next('.dropdown-menu').toggleClass('hidden');
+            });
+            $(document).on('click', function() { $('.dropdown-menu').addClass('hidden'); });
+
+            $('#workouts-container').on('click', '.btn-delete-workout', async function(e) {
+                e.stopPropagation();
+                const id = $(this).data('id');
+                const card = $(this).closest('.workout-tab');
+                
+                if (await showConfirm("Excluir Treino?", "Tudo será apagado.")) {
+                    $.ajax({
+                        url: '/Workout/DeleteWorkout',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (response) {
+                            if(response.success) {
+                                notyf.success(response.message);
+                                card.remove();
+                                if(card.hasClass('active')) GetWorkouts();
+                            } else { notyf.error(response.message); }
+                        }
+                    });
+                }
+            });
         });
 
-        function GetWorkouts() {
+        function GetWorkouts(resetSelection = true) {
             $.ajax({
                 url: '/Workout/GetWorkouts',
                 type: 'GET',
                 success: function (response) {
-                    if (!response.success) {
-                        notyf.error(response.message);
-                        return;
-                    }
+                    if (!response.success) return;
 
                     const container = $('#workouts-container');
                     const btnNew = $('#btn-create-new');
+                    const currentActiveId = !resetSelection ? $('.workout-tab.active').data('id') : null;
 
                     container.find('.workout-tab').remove();
 
                     response.data.forEach((workout, index) => {
-                        const isActive = index === 0 ? 'active' : '';
+                        let isActive = '';
+                        if (resetSelection && index === 0) isActive = 'active';
+                        else if (!resetSelection && workout.id == currentActiveId) isActive = 'active';
 
                         const menuHtml = `
                             <div class="relative">
                                 <button class="btn-options p-1 text-slate-500 hover:text-white transition rounded-full hover:bg-slate-700/50">
                                     <i class="fa-solid fa-ellipsis-vertical px-1"></i>
                                 </button>
-                                
-                                <!-- Menu Dropdown -->
                                 <div class="dropdown-menu hidden absolute right-0 top-6 w-32 bg-slate-800 border border-slate-600 rounded-lg shadow-xl z-50 overflow-hidden">
                                     <button class="btn-delete-workout w-full text-left px-4 py-2 text-xs font-bold text-red-400 hover:bg-slate-700 hover:text-red-300 transition flex items-center gap-2" data-id="${workout.id}">
                                         <i class="fa-solid fa-trash"></i> Excluir
                                     </button>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
 
                         const tabHtml = `
-                        <div class="workout-tab min-w-[160px] snap-start cursor-pointer group ${isActive}"
-                            data-id="${workout.id}"
-                            data-letter="${workout.letter}">
-                            
+                        <div class="workout-tab min-w-[160px] snap-start cursor-pointer group ${isActive}" data-id="${workout.id}" data-letter="${workout.letter}">
                             <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
                                 <div class="flex justify-between items-start mb-2 relative z-20">
-                                    <span class="tab-badge text-xs font-bold px-2 py-1 rounded">
-                                        ${workout.letter}
-                                    </span>
-                                    
-                                    <!-- Inserindo o Menu aqui -->
+                                    <span class="tab-badge text-xs font-bold px-2 py-1 rounded">${workout.letter}</span>
                                     ${menuHtml}
                                 </div>
-
-                                <h3 class="tab-title font-bold text-lg truncate relative z-10 mt-1">
-                                    ${workout.name}
-                                </h3>
-
-                                <p class="text-xs text-slate-500 mt-1 relative z-10 line-clamp-2">
-                                    ${workout.description || 'Sem descrição'}
-                                </p>
-
+                                <h3 class="tab-title font-bold text-lg truncate relative z-10 mt-1">${workout.name}</h3>
+                                <p class="text-xs text-slate-500 mt-1 relative z-10 line-clamp-2">${workout.description || 'Sem descrição'}</p>
                                 <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300 z-0"></div>
                             </div>
                         </div>`;
-
                         btnNew.before(tabHtml);
                     });
 
-                    $('#input-workout-name').val(response.data[0].name);
-                    $('#input-workout-desc').val(response.data[0].description);
-                    $('#input-workout-id').val(response.data[0].id);
-                },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
+                    if (resetSelection && response.data.length > 0) {
+                        $('.workout-tab').first().click();
+                    } else if (response.data.length === 0) {
+                        $('#input-workout-id').val('');
+                        $('#input-workout-name').val('');
+                        $('#input-workout-desc').val('');
+                        $('#exercises-list').html('<p class="text-slate-500 text-center py-8">Crie um novo treino para começar.</p>');
+                    }
                 }
             });
         }
 
+        function LoadExercisesForWorkout(workoutId) {
+            const list = $('#exercises-list');
+            list.html('<p class="text-slate-500 text-center py-8 italic">Carregando...</p>');
 
-        function GetWorkoutDetails(id) {
-            $('#input-workout-name').val('');
-            $('#input-workout-desc').val('');
-            $('#input-workout-id').val('');
-            
             $.ajax({
-                url: '/Workout/GetWorkoutDetails',
+                url: '/Workout/GetExercisesByWorkoutId',
                 type: 'GET',
-                data: { id : id},
-                success: function (response) {
-                    if (!response.success) {
-                        notyf.error(response.message);
+                data: { workoutId: workoutId },
+                success: function(response) {
+                    list.empty();
+                    if(!response.data || response.data.length === 0) {
+                        list.html('<p class="text-slate-500 text-center py-8">Nenhum exercício neste treino ainda.</p>');
                         return;
                     }
-                    $('#input-workout-name').val(response.data.name);
-                    $('#input-workout-desc').val(response.data.description);
-                    $('#input-workout-id').val(response.data.id);
-                    
+
+                    response.data.forEach(ex => {
+                        const html = `
+                        <div class="bg-slate-900/40 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4 transition hover:bg-slate-800/60">
+                            <div class="flex-1 w-full text-center sm:text-left">
+                                <h4 class="font-bold text-white text-lg">${ex.name}</h4>
+                                <span class="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Obs: ${ex.obs || '-'}</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-900 rounded-lg p-2 border border-slate-700 text-sm">
+                                <div class="text-center px-2 border-r border-slate-700">
+                                    <span class="block text-[10px] text-slate-500 uppercase">Carga</span>
+                                    <span class="font-bold text-emerald-400">${ex.weight || 0}kg</span>
+                                </div>
+                                <div class="text-center px-2 border-r border-slate-700">
+                                    <span class="block text-[10px] text-slate-500 uppercase">Sets</span>
+                                    <span class="font-bold text-white">${ex.series}</span>
+                                </div>
+                                <div class="text-center px-2 border-r border-slate-700">
+                                    <span class="block text-[10px] text-slate-500 uppercase">Reps</span>
+                                    <span class="font-bold text-white">${ex.reps}</span>
+                                </div>
+                                <div class="text-center px-2">
+                                    <span class="block text-[10px] text-slate-500 uppercase">Desc</span>
+                                    <span class="font-bold text-white">${ex.rest}'</span>
+                                </div>
+                            </div>
+                            <button class="text-slate-500 hover:text-red-500 p-2 transition btn-delete-exercise" data-id="${ex.id}"><i class="fa-solid fa-trash-can text-lg"></i></button>
+                        </div>`;
+                        list.append(html);
+                    });
                 },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                }
+                error: function() { list.html('<p class="text-red-400 text-center py-4">Erro ao carregar exercícios.</p>'); }
             });
         }
     </script>
 
     <style>
-        .tab-card {
-            background-color: rgba(30, 41, 59, 0.4); 
-            border-color: #334155; 
-            height: 140px;              
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; 
-        }
-        .tab-badge {
-            background-color: #334155; 
-            color: #cbd5e1; 
-        }
+        .tab-card { background-color: rgba(30, 41, 59, 0.4); border-color: #334155; height: 140px; display: flex; flex-direction: column; justify-content: flex-start; }
+        .tab-badge { background-color: #334155; color: #cbd5e1; }
         .tab-title { color: #cbd5e1; }
         .tab-glow { opacity: 0; background-color: rgba(16, 185, 129, 0.1); filter: blur(10px); }
 
-        .workout-tab.active .tab-card {
-            background-color: rgba(30, 41, 59, 0.9);
-            border-color: #10b981; 
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .workout-tab.active .tab-badge {
-            background-color: #10b981;
-            color: white;
-        }
+        .workout-tab.active .tab-card { background-color: rgba(30, 41, 59, 0.9); border-color: #10b981; transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .workout-tab.active .tab-badge { background-color: #10b981; color: white; }
         .workout-tab.active .tab-title { color: white; }
         .workout-tab.active .tab-glow { opacity: 1; }
         
-        .dropdown-menu {
-            animation: fadeIn 0.1s ease-out;
-        }
+        .dropdown-menu { animation: fadeIn 0.1s ease-out; }
         @@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         .custom-scrollbar::-webkit-scrollbar { height: 4px; }
