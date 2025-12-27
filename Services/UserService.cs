@@ -107,6 +107,7 @@ public class UserService : IUserService
         }
     }
 
+    //corrigir o problema do tamanho das imagens que são enviadas. (reduzir a resolução delas)
     public async Task<Retorno> UploadProfilePictureAsync(int userId, IFormFile profilePic)
     {
         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(profilePic.FileName)}";
