@@ -33,7 +33,7 @@
                 <label class="block text-xs font-medium text-slate-400 mb-1">Foco / Descrição</label>
                 <div class="flex gap-2">
                     <input type="text" id="input-workout-desc" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition" placeholder="Ex: Hipertrofia de Pernas">
-                    <button class="btn-save-workout bg-slate-700 hover:bg-emerald-600 text-white px-4 rounded-lg transition" title="Salvar Nome/Descrição">
+                    <button class="btn-save-workout bg-emerald-600 hover:bg-emerald-500 text-white px-4 rounded-lg shadow-lg shadow-emerald-500/20 transition" title="Salvar">
                         <i class="fa-solid fa-floppy-disk"></i>
                     </button>
                 </div>
@@ -59,7 +59,6 @@
     <div class="fixed inset-0 z-10 overflow-y-auto">
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div class="relative transform overflow-hidden rounded-xl bg-slate-800 border border-slate-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
-                
                 <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-folder-plus text-emerald-500"></i> Criar Novo Treino
@@ -71,7 +70,6 @@
                         </div>
                     </form>
                 </div>
-
                 <div class="bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2 border-t border-slate-700">
                     <button id="add-workout-btn" type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 sm:w-auto transition">Criar</button>
                     <button type="button" class="btn-close-modal mt-3 inline-flex w-full justify-center rounded-lg bg-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 shadow-sm hover:bg-slate-600 sm:mt-0 sm:w-auto transition">Cancelar</button>
@@ -86,18 +84,15 @@
     <div class="fixed inset-0 z-10 overflow-y-auto">
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div class="relative transform overflow-hidden rounded-xl bg-slate-800 border border-slate-700 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                
                 <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
                         <i class="fa-solid fa-dumbbell text-emerald-500"></i> Novo Exercício
                     </h3>
-                    
                     <form id="form-exercise-modal" class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Nome do Exercício</label>
                             <input type="text" id="modal-ex-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-emerald-500 focus:outline-none transition placeholder-slate-600" placeholder="Ex: Supino Reto">
                         </div>
-
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Carga (kg)</label>
@@ -116,31 +111,87 @@
                                 <input type="number" id="modal-ex-rest" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition" placeholder="2">
                             </div>
                         </div>
-
                         <div>
                             <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Observações (Opcional)</label>
                             <textarea id="modal-ex-obs" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:border-emerald-500 focus:outline-none transition h-20 resize-none" placeholder="Ex: Drop-set na última série"></textarea>
                         </div>
                     </form>
                 </div>
-
                 <div class="bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2 border-t border-slate-700">
-                    <button id="btn-confirm-add-exercise" type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-500 sm:w-auto transition">
-                        Adicionar
-                    </button>
-                    <button type="button" class="btn-close-modal mt-3 inline-flex w-full justify-center rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-bold text-slate-300 shadow-sm hover:bg-slate-600 sm:mt-0 sm:w-auto transition">
-                        Cancelar
-                    </button>
+                    <button id="btn-confirm-add-exercise" type="button" class="w-full inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-500 sm:w-auto transition">Adicionar</button>
+                    <button type="button" class="btn-close-modal mt-3 inline-flex w-full justify-center rounded-lg bg-slate-700 px-4 py-2.5 text-sm font-bold text-slate-300 shadow-sm hover:bg-slate-600 sm:mt-0 sm:w-auto transition">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<div id="editModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" aria-hidden="true" id="modalBackdrop"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            
+            <div class="relative inline-block align-bottom bg-slate-800 rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-slate-700">
+                <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-bold text-white mb-4 flex items-center gap-2" id="modal-title">
+                        <i class="fa-solid fa-pen-to-square text-blue-500"></i> Editar Exercício
+                    </h3>
+                    
+                    <form id="editForm" class="space-y-4">
+                        <input type="hidden" id="edit-id" name="id">
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Exercício</label>
+                            <input type="text" id="edit-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Peso (kg)</label>
+                                <input type="number" id="edit-weight" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Reps</label>
+                                <input type="number" id="edit-reps" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Séries</label>
+                                <input type="number" id="edit-series" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Descanso (min)</label>
+                                <input type="number" id="edit-rest" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Observações</label>
+                            <textarea id="edit-obs" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500 transition h-20 resize-none"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-slate-800/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-slate-700 gap-2">
+                    <button type="button" id="btn-save-edit" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition">
+                        Salvar Alterações
+                    </button>
+                    <button type="button" id="btn-cancel-edit" class="mt-3 w-full inline-flex justify-center rounded-lg border border-slate-600 shadow-sm px-4 py-2 bg-slate-700 text-base font-medium text-slate-300 hover:bg-slate-600 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition">
+                        Cancelar
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
 @section Scripts {
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
     <script>
         $(document).ready(function() {
             
+            $("<style>.ui-state-highlight { height: 80px; background-color: rgba(16, 185, 129, 0.1); border: 2px dashed #10b981; border-radius: 0.75rem; margin-bottom: 1rem; }</style>").appendTo("head");
+
             GetWorkouts();
 
             $('#workouts-container').on('click', '.workout-tab', function () {
@@ -160,8 +211,36 @@
                 LoadExercisesForWorkout(id);
             });
 
-            const $exModal = $('#addExerciseModal');
+            $(document).on('click', '.edit-btn', function() {
+                $('#editForm')[0].reset();
 
+                $.ajax({
+                    url: '/Home/GetExercicioById', 
+                    type: 'GET',
+                    data: { id: $(this).data('id') },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#edit-id').val(response.data.id);
+                            $('#edit-name').val(response.data.name);
+                            $('#edit-weight').val(response.data.weight);
+                            $('#edit-reps').val(response.data.reps);
+                            $('#edit-series').val(response.data.series);
+                            $('#edit-rest').val(response.data.rest);
+                            $('#edit-obs').val(response.data.obs);
+
+                            $('#editModal').removeClass('hidden').hide().fadeIn(200);
+                        } else {                             
+                            if(typeof notyf !== 'undefined') notyf.error(response.message);
+                        }
+                    },
+                    error: function(xhr) { alert('Erro ao buscar dados: ' + xhr.responseText); }
+                });
+            });
+
+            $('#btn-cancel-edit, #modalBackdrop').on('click', closeModal);
+
+
+            const $exModal = $('#addExerciseModal');
             $('#btn-open-exercise-modal').on('click', function() {
                 const workoutId = $('#input-workout-id').val();
                 if(!workoutId) {
@@ -174,16 +253,14 @@
 
             $('#btn-confirm-add-exercise').on('click', function() {
                 const workoutId = $('#input-workout-id').val();
-                const name = $('#modal-ex-name').val();
-
-                if(!name) {
-                    notyf.error("O nome do exercício é obrigatório.");
+                if(!$('#modal-ex-name').val()) {
+                    notyf.error("Nome é obrigatório.");
                     return;
                 }
 
                 const exerciseData = {
                     workoutId: workoutId,
-                    name: name,
+                    name: $('#modal-ex-name').val(),
                     weight: $('#modal-ex-weight').val(),
                     series: $('#modal-ex-series').val(),
                     reps: $('#modal-ex-reps').val(),
@@ -200,17 +277,40 @@
                             notyf.success(response.message);
                             $exModal.fadeOut(200, function(){ $(this).addClass('hidden'); });
                             LoadExercisesForWorkout(workoutId);
+                        } else { notyf.error(response.message); }
+                    }
+                });
+            });
+
+            $(document).on('click', '.delete-btn', async function () {
+                const btn = $(this);
+                const id = btn.data('id');
+                const card = btn.closest('.workout-item');
+
+                const confirmed = await showConfirm("Excluir?", "Deseja remover este exercício?");
+                if (!confirmed) return;
+
+                card.css('pointer-events', 'none').addClass('opacity-50');
+
+                $.ajax({
+                    url: '/Workout/DeleteExerciseById',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            card.slideUp(300, function() { card.remove(); });
                         } else {
                             notyf.error(response.message);
+                            card.css('pointer-events', '').removeClass('opacity-50');
                         }
-                    },
-                    error: function() { notyf.error("Erro ao adicionar exercício."); }
+                    }
                 });
             });
 
             const $workoutModal = $('#newWorkoutModal');
             $('#btn-create-new').on('click', function(e) { e.preventDefault(); $workoutModal.removeClass('hidden').fadeIn(200); });
-            
+            $('.btn-close-modal, .modal-backdrop').on('click', function() { $('.fixed.z-\\[9999\\]').fadeOut(200, function() { $(this).addClass('hidden'); }); });
+
             $('#add-workout-btn').on('click', function () {
                 let newName = $('#newName').val();
                 $.ajax({
@@ -228,60 +328,15 @@
                 });
             });
 
-
-            $('.btn-close-modal, .modal-backdrop').on('click', function() {
-                $('.fixed.z-\\[9999\\]').fadeOut(200, function() {
-                    $(this).addClass('hidden');
-                });
-            });
-
             $('.btn-save-workout').on('click', function () {
-                const workout = {
-                    id: $('#input-workout-id').val(),
-                    name: $('#input-workout-name').val(),
-                    description: $('#input-workout-desc').val()
-                };
+                const workout = { id: $('#input-workout-id').val(), name: $('#input-workout-name').val(), description: $('#input-workout-desc').val() };
                 $.ajax({
-                    url: '/Workout/EditWorkout',
-                    type: 'POST',
-                    data: { workout : workout},
-                    success: function (response) {
-                        if (response.success) {
-                            notyf.success("Informações salvas!");
-                            GetWorkouts(false);
-                        } else { notyf.error(response.message); }
-                    }
+                    url: '/Workout/EditWorkout', type: 'POST', data: { workout : workout},
+                    success: function (response) { if (response.success) { notyf.success("Salvo!"); GetWorkouts(false); } else { notyf.error(response.message); } }
                 });
-            });
-
-            $('#workouts-container').on('click', '.btn-options', function(e) {
-                e.stopPropagation();
-                $('.dropdown-menu').not($(this).next()).addClass('hidden');
-                $(this).next('.dropdown-menu').toggleClass('hidden');
-            });
-            $(document).on('click', function() { $('.dropdown-menu').addClass('hidden'); });
-
-            $('#workouts-container').on('click', '.btn-delete-workout', async function(e) {
-                e.stopPropagation();
-                const id = $(this).data('id');
-                const card = $(this).closest('.workout-tab');
-                
-                if (await showConfirm("Excluir Treino?", "Tudo será apagado.")) {
-                    $.ajax({
-                        url: '/Workout/DeleteWorkout',
-                        type: 'POST',
-                        data: { id: id },
-                        success: function (response) {
-                            if(response.success) {
-                                notyf.success(response.message);
-                                card.remove();
-                                if(card.hasClass('active')) GetWorkouts();
-                            } else { notyf.error(response.message); }
-                        }
-                    });
-                }
             });
         });
+
 
         function GetWorkouts(resetSelection = true) {
             $.ajax({
@@ -289,11 +344,9 @@
                 type: 'GET',
                 success: function (response) {
                     if (!response.success) return;
-
                     const container = $('#workouts-container');
                     const btnNew = $('#btn-create-new');
                     const currentActiveId = !resetSelection ? $('.workout-tab.active').data('id') : null;
-
                     container.find('.workout-tab').remove();
 
                     response.data.forEach((workout, index) => {
@@ -301,24 +354,12 @@
                         if (resetSelection && index === 0) isActive = 'active';
                         else if (!resetSelection && workout.id == currentActiveId) isActive = 'active';
 
-                        const menuHtml = `
-                            <div class="relative">
-                                <button class="btn-options p-1 text-slate-500 hover:text-white transition rounded-full hover:bg-slate-700/50">
-                                    <i class="fa-solid fa-ellipsis-vertical px-1"></i>
-                                </button>
-                                <div class="dropdown-menu hidden absolute right-0 top-6 w-32 bg-slate-800 border border-slate-600 rounded-lg shadow-xl z-50 overflow-hidden">
-                                    <button class="btn-delete-workout w-full text-left px-4 py-2 text-xs font-bold text-red-400 hover:bg-slate-700 hover:text-red-300 transition flex items-center gap-2" data-id="${workout.id}">
-                                        <i class="fa-solid fa-trash"></i> Excluir
-                                    </button>
-                                </div>
-                            </div>`;
-
                         const tabHtml = `
                         <div class="workout-tab min-w-[160px] snap-start cursor-pointer group ${isActive}" data-id="${workout.id}" data-letter="${workout.letter}">
                             <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
                                 <div class="flex justify-between items-start mb-2 relative z-20">
                                     <span class="tab-badge text-xs font-bold px-2 py-1 rounded">${workout.letter}</span>
-                                    ${menuHtml}
+                                    <i class="fa-solid fa-ellipsis-vertical text-slate-500 hover:text-white p-1"></i>
                                 </div>
                                 <h3 class="tab-title font-bold text-lg truncate relative z-10 mt-1">${workout.name}</h3>
                                 <p class="text-xs text-slate-500 mt-1 relative z-10 line-clamp-2">${workout.description || 'Sem descrição'}</p>
@@ -328,14 +369,8 @@
                         btnNew.before(tabHtml);
                     });
 
-                    if (resetSelection && response.data.length > 0) {
-                        $('.workout-tab').first().click();
-                    } else if (response.data.length === 0) {
-                        $('#input-workout-id').val('');
-                        $('#input-workout-name').val('');
-                        $('#input-workout-desc').val('');
-                        $('#exercises-list').html('<p class="text-slate-500 text-center py-8">Crie um novo treino para começar.</p>');
-                    }
+                    if (resetSelection && response.data.length > 0) { $('.workout-tab').first().click(); }
+                    else if (response.data.length === 0) { $('#exercises-list').html('<p class="text-slate-500 text-center py-8">Crie um treino.</p>'); }
                 }
             });
         }
@@ -356,37 +391,89 @@
                     }
 
                     response.data.forEach(ex => {
-                        const html = `
-                        <div class="bg-slate-900/40 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4 transition hover:bg-slate-800/60">
-                            <div class="flex-1 w-full text-center sm:text-left">
-                                <h4 class="font-bold text-white text-lg">${ex.name}</h4>
-                                <span class="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Obs: ${ex.obs || '-'}</span>
+                        let dataAttributes = `data-id="${ex.id}"`; 
+
+                        let html = `
+                            <div class="workout-item animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4" data-id="${ex.id}">
+                                
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+
+                                <div class="flex items-center gap-4 w-full sm:w-auto mb-3 sm:mb-0">
+                                    <div class="drag-handle cursor-move text-slate-600 hover:text-emerald-500 p-2 -ml-2 transition hidden sm:block">
+                                        <i class="fa-solid fa-grip-vertical"></i>
+                                    </div>
+                                    <div class="drag-handle cursor-move text-slate-600 hover:text-emerald-500 p-2 -ml-2 transition sm:hidden">
+                                        <i class="fa-solid fa-grip-lines"></i>
+                                    </div>
+
+                                    <div class="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-emerald-500 border border-slate-700 shrink-0">
+                                        <i class="fa-solid fa-dumbbell"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">${ex.name}</h3>
+                                        <p class="text-sm text-slate-400">
+                                            ${ex.series} séries • ${ex.reps} reps
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4">
+                                    <span class="block text-2xl font-bold text-emerald-400 mr-2">
+                                        ${ex.weight ?? 0} <span class="text-sm text-slate-500">kg</span>
+                                    </span>
+                                    
+                                    <button ${dataAttributes} class="edit-btn text-slate-500 hover:text-blue-400 p-2 rounded-md hover:bg-slate-700 transition">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+
+                                    <button data-id="${ex.id}" class="delete-btn text-slate-500 hover:text-red-500 p-2 rounded-md hover:bg-slate-700 transition">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2 bg-slate-900 rounded-lg p-2 border border-slate-700 text-sm">
-                                <div class="text-center px-2 border-r border-slate-700">
-                                    <span class="block text-[10px] text-slate-500 uppercase">Carga</span>
-                                    <span class="font-bold text-emerald-400">${ex.weight || 0}kg</span>
-                                </div>
-                                <div class="text-center px-2 border-r border-slate-700">
-                                    <span class="block text-[10px] text-slate-500 uppercase">Sets</span>
-                                    <span class="font-bold text-white">${ex.series}</span>
-                                </div>
-                                <div class="text-center px-2 border-r border-slate-700">
-                                    <span class="block text-[10px] text-slate-500 uppercase">Reps</span>
-                                    <span class="font-bold text-white">${ex.reps}</span>
-                                </div>
-                                <div class="text-center px-2">
-                                    <span class="block text-[10px] text-slate-500 uppercase">Desc</span>
-                                    <span class="font-bold text-white">${ex.rest}'</span>
-                                </div>
-                            </div>
-                            <button class="text-slate-500 hover:text-red-500 p-2 transition btn-delete-exercise" data-id="${ex.id}"><i class="fa-solid fa-trash-can text-lg"></i></button>
-                        </div>`;
+                        `;
                         list.append(html);
                     });
+
+                    InitSortable();
                 },
                 error: function() { list.html('<p class="text-red-400 text-center py-4">Erro ao carregar exercícios.</p>'); }
             });
+        }
+
+        function InitSortable() {
+            if ($("#exercises-list").data("ui-sortable")) {
+                $("#exercises-list").sortable("destroy");
+            }
+            $("#exercises-list").sortable({
+                handle: ".drag-handle", 
+                placeholder: "ui-state-highlight", 
+                axis: "y", 
+                opacity: 0.8,
+                update: function (event, ui) { SalvarNovaOrdem(); }
+            });
+        }
+
+        function SalvarNovaOrdem() {
+            var exercisesOrder = [];
+            $("#exercises-list .workout-item").each(function (index) {
+                var id = $(this).data('id');
+                exercisesOrder.push({ id: parseInt(id), order: index + 1 });
+            });
+
+            $.ajax({
+                url: '/Workout/UpdateExerciseOrder',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(exercisesOrder),
+                success: function (response) {
+                    if (!response.success) { notyf.error(response.message); LoadExercisesForWorkout($('#input-workout-id').val()); }
+                }
+            });
+        }
+
+        function closeModal() {
+            $('#editModal').fadeOut(200, function() { $(this).addClass('hidden'); });
         }
     </script>
 
@@ -402,6 +489,8 @@
         .workout-tab.active .tab-glow { opacity: 1; }
         
         .dropdown-menu { animation: fadeIn 0.1s ease-out; }
+        .animate-entry { animation: slideDown 0.4s ease-out forwards; }
+        @@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         @@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         .custom-scrollbar::-webkit-scrollbar { height: 4px; }

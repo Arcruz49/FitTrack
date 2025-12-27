@@ -1,22 +1,17 @@
-
-
 SET FOREIGN_KEY_CHECKS = 0;
 
--- =========================
--- DATABASE
--- =========================
-CREATE DATABASE IF NOT EXISTS dbFitTrack;
+CREATE DATABASE IF NOT EXISTS dbFitTrack
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
 USE dbFitTrack;
 
--- =========================
--- PROFILES
--- =========================
 CREATE TABLE IF NOT EXISTS Profiles (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    `type` VARCHAR(50) NOT NULL,
-    admin TINYINT(1) NOT NULL DEFAULT 0,
-    creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+    `type` VARCHAR(50),
+    admin TINYINT(1) DEFAULT 0,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO Profiles (`type`, admin, creation_date)
 SELECT 'Admin', 1, '2025-12-18 00:33:44'
@@ -26,46 +21,37 @@ INSERT INTO Profiles (`type`, admin, creation_date)
 SELECT 'User', 0, '2025-12-18 00:33:44'
 WHERE NOT EXISTS (SELECT 1 FROM Profiles WHERE `type` = 'User');
 
--- =========================
--- USERS
--- =========================
 CREATE TABLE IF NOT EXISTS Users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    password VARCHAR(500) NOT NULL,
-    profileId INT NOT NULL,
+    email VARCHAR(255),
+    name VARCHAR(255),
+    password VARCHAR(500),
+    profileId INT,
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT fk_users_profiles
         FOREIGN KEY (profileId)
         REFERENCES Profiles(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =========================
--- EXERCISES
--- =========================
 CREATE TABLE IF NOT EXISTS Exercises (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    userId INT NOT NULL,
-    name VARCHAR(500) NOT NULL,
+    userId INT,
+    name VARCHAR(500),
     weight DECIMAL(5,2),
     reps INT,
     series INT,
     rest INT,
     obs VARCHAR(500),
-    `order` int,
+    `order` INT,
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT fk_exercises_users
         FOREIGN KEY (userId)
         REFERENCES Users(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-);
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE Users
     ADD COLUMN IF NOT EXISTS bio VARCHAR(500),
@@ -73,44 +59,38 @@ ALTER TABLE Users
 
 CREATE TABLE IF NOT EXISTS UserMetrics (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    userId INT NOT NULL,
-
+    userId INT,
     weight DECIMAL(5,2),
     height DECIMAL(5,2),
     bodyFat DECIMAL(5,2),
-
     armCircumference DECIMAL(5,2),
     chestCircumference DECIMAL(5,2),
     waistCircumference DECIMAL(5,2),
     legCircumference DECIMAL(5,2),
-
     weightGoal DECIMAL(5,2),
     workoutsGoal INT,
-
     CONSTRAINT fk_usermetrics_users
         FOREIGN KEY (userId)
         REFERENCES Users(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE Users
     ADD COLUMN IF NOT EXISTS profilePic VARCHAR(500);
 
-CREATE TABLE IF NOT EXISTS UserWorkouts
-(
+CREATE TABLE IF NOT EXISTS UserWorkouts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     userId INT,
-    letter char(2),
+    letter CHAR(2),
     name VARCHAR(255),
     description VARCHAR(500),
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE Exercises 
-add column IF NOT EXISTS workoutId int;
+ADD COLUMN IF NOT EXISTS workoutId INT;
 
--- sim isso tudo pra uma unica foreing key obrigado golfinho do mysql
 SET @fk_exists := (
     SELECT COUNT(*)
     FROM information_schema.TABLE_CONSTRAINTS
@@ -134,7 +114,12 @@ PREPARE stmt FROM @sql;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
--- =========================
--- REATIVA FK
--- =========================
+CREATE INDEX IF NOT EXISTS idx_users_profileId ON Users(profileId);
+CREATE INDEX IF NOT EXISTS idx_users_email ON Users(email);
+CREATE INDEX IF NOT EXISTS idx_exercises_userId ON Exercises(userId);
+CREATE INDEX IF NOT EXISTS idx_exercises_workoutId ON Exercises(workoutId);
+CREATE INDEX IF NOT EXISTS idx_exercises_user_workout ON Exercises(userId, workoutId);
+CREATE INDEX IF NOT EXISTS idx_usermetrics_userId ON UserMetrics(userId);
+CREATE INDEX IF NOT EXISTS idx_userworkouts_userId ON UserWorkouts(userId);
+
 SET FOREIGN_KEY_CHECKS = 1;

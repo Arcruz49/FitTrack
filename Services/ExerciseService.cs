@@ -185,7 +185,6 @@ public class ExerciseService : IExerciseService
         return new RetornoGenerico<List<ExerciseDTO>>{success = true, data = exercicios};
     }
 
-
-
     
+
 }

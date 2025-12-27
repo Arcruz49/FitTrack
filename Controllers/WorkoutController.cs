@@ -103,7 +103,7 @@ public class WorkoutController : BaseController
     }
 
     [Authorize]
-    [HttpPost]
+    [HttpGet]
     public JsonResult GetExercisesByWorkoutId(int workoutId = 0)
     {
         if(workoutId == 0) return Json(new {success = false, message = "Treino inválido"});
@@ -113,6 +113,31 @@ public class WorkoutController : BaseController
         if(!getExercisesResult.success) return Json(new {success = false, message = getExercisesResult.message});
 
         return Json(new {success = true, data = getExercisesResult.data});
+    }
+
+    [Authorize]
+    [HttpPost]
+    public JsonResult UpdateExerciseOrder([FromBody] List<ExerciseOrder> exercises)
+    {
+        if (exercises == null || exercises.Count == 0)
+            return Json(new { success = false, message = "Lista vazia" });
+
+        var exerciseOrderResult = _exerciseService.UpdateExerciseOrder(UserId, exercises);
+
+        if(!exerciseOrderResult.success) return Json(new { success = false, message = exerciseOrderResult.message});
+
+        return Json(new { success = true, message = "Ordem atualizada com sucesso" });
+    }
+
+    [Authorize]
+    [HttpPost]
+    public JsonResult DeleteExerciseById(int id = 0)
+    {
+        var deleteExerciseResult = _exerciseService.DeleteExerciseById(UserId, id);
+        
+        if(!deleteExerciseResult.success) return Json(new {success = false, message = deleteExerciseResult.message});
+
+        return Json(new {success = true, message = "Exercício excluído com sucesso"});
     }
     
 }
