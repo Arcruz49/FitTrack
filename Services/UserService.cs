@@ -3,6 +3,7 @@ using FitTrack.Models;
 using FitTrack.Models.Resources;
 using FitTrack.Utils;
 using FitTrack.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace FitTrack.Services;
@@ -152,6 +153,13 @@ public class UserService : IUserService
         {
             return new Retorno { success = false, message = _util.ErrorMessage(ex) };
         }
+    }
+
+    
+    public RetornoGenerico<weightGoalDTO> GetWeightGoalByUserId(int userId)
+    {
+        return new RetornoGenerico<weightGoalDTO>  { success = true, message = "" };
+        
     }
 
 }

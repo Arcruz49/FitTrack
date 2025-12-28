@@ -23,8 +23,8 @@ builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Login";       // Página de login
-        options.LogoutPath = "/Logout";     // Página de logout
+        options.LoginPath = "/Login";       
+        options.LogoutPath = "/Logout";     
         options.ExpireTimeSpan = TimeSpan.FromHours(12);
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;

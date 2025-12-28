@@ -184,9 +184,7 @@
     </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-
+    
     <script>
         $(document).ready(function() {
             
@@ -209,6 +207,18 @@
                 $('#input-workout-desc').val(desc);
 
                 LoadExercisesForWorkout(id);
+            });
+
+            $('#workouts-container').on('click', '.btn-options', function(e) {
+                e.stopPropagation(); 
+                
+                $('.dropdown-menu').not($(this).next()).addClass('hidden');
+                
+                $(this).next('.dropdown-menu').toggleClass('hidden');
+            });
+
+            $(document).on('click', function() { 
+                $('.dropdown-menu').addClass('hidden'); 
             });
 
             $(document).on('click', '.edit-btn', function() {
@@ -282,27 +292,39 @@
                 });
             });
 
-            $(document).on('click', '.delete-btn', async function () {
+            $('#workouts-container').on('click', '.btn-delete-workout', async function(e) {
+                e.stopPropagation(); 
                 const btn = $(this);
                 const id = btn.data('id');
-                const card = btn.closest('.workout-item');
+                const card = btn.closest('.workout-tab');
 
-                const confirmed = await showConfirm("Excluir?", "Deseja remover este exercício?");
+                const confirmed = await showConfirm(
+                    "Excluir Treino?", 
+                    "Você tem certeza? Todos os exercícios deste treino também serão apagados."
+                );
+
                 if (!confirmed) return;
 
-                card.css('pointer-events', 'none').addClass('opacity-50');
-
                 $.ajax({
-                    url: '/Workout/DeleteExerciseById',
+                    url: '/Workout/DeleteWorkout', 
                     type: 'POST',
                     data: { id: id },
                     success: function (response) {
                         if (response.success) {
-                            card.slideUp(300, function() { card.remove(); });
+                            notyf.success(response.message);
+                            
+                            card.animate({ width: 0, opacity: 0, margin: 0, padding: 0 }, 300, function(){
+                                card.remove();
+                                if(card.hasClass('active')) {
+                                    GetWorkouts(true); 
+                                }
+                            });
                         } else {
                             notyf.error(response.message);
-                            card.css('pointer-events', '').removeClass('opacity-50');
                         }
+                    },
+                    error: function () {
+                        notyf.error('Erro ao deletar treino.');
                     }
                 });
             });
@@ -344,9 +366,11 @@
                 type: 'GET',
                 success: function (response) {
                     if (!response.success) return;
+
                     const container = $('#workouts-container');
                     const btnNew = $('#btn-create-new');
                     const currentActiveId = !resetSelection ? $('.workout-tab.active').data('id') : null;
+
                     container.find('.workout-tab').remove();
 
                     response.data.forEach((workout, index) => {
@@ -354,23 +378,43 @@
                         if (resetSelection && index === 0) isActive = 'active';
                         else if (!resetSelection && workout.id == currentActiveId) isActive = 'active';
 
+                        const menuHtml = `
+                            <div class="relative z-50"> 
+                                <button type="button" class="btn-options p-1 text-slate-500 hover:text-white transition rounded-full hover:bg-slate-700/50">
+                                    <i class="fa-solid fa-ellipsis-vertical px-1"></i>
+                                </button>
+                                <div class="dropdown-menu hidden absolute right-0 top-8 w-32 bg-slate-800 border border-slate-600 rounded-lg shadow-xl z-50 overflow-hidden">
+                                    <button type="button" class="btn-delete-workout w-full text-left px-4 py-2 text-xs font-bold text-red-400 hover:bg-slate-700 hover:text-red-300 transition flex items-center gap-2" data-id="${workout.id}">
+                                        <i class="fa-solid fa-trash"></i> Excluir
+                                    </button>
+                                </div>
+                            </div>`;
+
                         const tabHtml = `
                         <div class="workout-tab min-w-[160px] snap-start cursor-pointer group ${isActive}" data-id="${workout.id}" data-letter="${workout.letter}">
-                            <div class="tab-card p-4 rounded-xl border-2 transition-all relative overflow-hidden">
+                            <div class="tab-card p-4 rounded-xl border-2 transition-all relative"> 
                                 <div class="flex justify-between items-start mb-2 relative z-20">
                                     <span class="tab-badge text-xs font-bold px-2 py-1 rounded">${workout.letter}</span>
-                                    <i class="fa-solid fa-ellipsis-vertical text-slate-500 hover:text-white p-1"></i>
+                                    
+                                    ${menuHtml} 
                                 </div>
                                 <h3 class="tab-title font-bold text-lg truncate relative z-10 mt-1">${workout.name}</h3>
                                 <p class="text-xs text-slate-500 mt-1 relative z-10 line-clamp-2">${workout.description || 'Sem descrição'}</p>
-                                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300 z-0"></div>
+                                <div class="tab-glow absolute inset-0 opacity-0 transition-opacity duration-300 z-0 rounded-xl"></div>
                             </div>
                         </div>`;
+                        
                         btnNew.before(tabHtml);
                     });
 
-                    if (resetSelection && response.data.length > 0) { $('.workout-tab').first().click(); }
-                    else if (response.data.length === 0) { $('#exercises-list').html('<p class="text-slate-500 text-center py-8">Crie um treino.</p>'); }
+                    if (resetSelection && response.data.length > 0) {
+                        $('.workout-tab').first().click();
+                    } else if (response.data.length === 0) {
+                        $('#input-workout-id').val('');
+                        $('#input-workout-name').val('');
+                        $('#input-workout-desc').val('');
+                        $('#exercises-list').html('<p class="text-slate-500 text-center py-8">Crie um novo treino para começar.</p>');
+                    }
                 }
             });
         }
