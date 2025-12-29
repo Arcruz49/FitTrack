@@ -1,8 +1,9 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitTrack.Models
 {
-    public class UserWorkout
+    public class UserWorkouts
     {
         public int id { get; set; }
         public int userId { get; set; }
@@ -11,7 +12,8 @@ namespace FitTrack.Models
         public string? letter { get; set; } 
         public DateTime creation_date { get; set; }
 
-        public Users? user { get; set; }
+        [ForeignKey("userId")]
+        public Users User { get; set; }
 
     }
 }

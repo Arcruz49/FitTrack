@@ -32,32 +32,54 @@
         
         <div class="lg:col-span-8 space-y-6">
 
-
             <div class="glass-card rounded-xl p-6">
                 <h2 class="font-semibold text-lg flex items-center gap-2 mb-4">
                     <i class="fa-solid fa-chart-line text-blue-500"></i> Progresso no Peso
                 </h2>
                 <div class="flex justify-between items-end mb-2">
-                    <div><p class="text-sm text-slate-400">Atual</p><p class="text-2xl font-bold text-white">52.5 kg</p></div>
-                    <div class="text-right"><p class="text-sm text-slate-400">Meta</p><p class="text-2xl font-bold text-white">60 kg</p></div>
+                    <div><p class="text-sm text-slate-400">Atual</p><p id="userWeight" class="text-2xl font-bold text-white">00.0 kg</p></div>
+                    <div class="text-right"><p class="text-sm text-slate-400">Meta</p><p id="userWeightGoal" class="text-2xl font-bold text-white">00.0 kg</p></div>
                 </div>
                 <div class="w-full bg-slate-700 rounded-full h-4 relative overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-4 rounded-full" style="width: 87%;"></div>
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-4 rounded-full" style="width: 0%;"></div>
                 </div>
             </div>
-
 
             <div class="glass-card rounded-xl overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
-                    <h2 class="font-semibold text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-emerald-500"></i> Exercícios de Hoje
-                    </h2>
-                    <span id="date" class="text-xs bg-emerald-900/50 text-emerald-400 px-2 py-1 rounded border border-emerald-900">Data</span>
+                <div class="px-4 sm:px-6 py-4 border-b border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800/50">
+                    
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-3">
+                            <span id="workoutLetter" class="bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded shadow-lg shadow-emerald-500/20 hidden">
+                                -
+                            </span>
+                            <h2 class="font-semibold text-lg text-white flex items-center gap-2">
+                                <span id="workoutName">Carregando treino...</span>
+                            </h2>
+                            <h2 class="font-semibold text-lg text-white flex items-center gap-2 hidden">
+                                <span id="workoutId"></span>
+                            </h2>
+                            
+                            <button id="btn-next-workout" class="text-slate-500 hover:text-blue-400 hover:bg-slate-700/50 p-1.5 rounded-lg transition" title="Ir para o próximo treino">
+                                <i class="fa-solid fa-forward-step"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <p id="workoutDesc" class="text-xs text-slate-400 pl-1"></p>
+                            <span class="text-slate-600 text-[10px] hidden sm:inline">•</span>
+                            <span id="date" class="text-xs bg-emerald-900/50 text-emerald-400 px-2 py-0.5 rounded border border-emerald-900 whitespace-nowrap hidden sm:inline-block">Data</span>
+                        </div>
+                    </div>
+
+                    <button id="btn-finish-workout" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-flag-checkered group-hover:animate-bounce"></i>
+                        Concluir Treino
+                    </button>
                 </div>
-                <div id="workoutList" class="p-6 space-y-4">
+
+                <div id="workoutList" class="p-6 space-y-4 min-h-[100px]">
                 </div>
             </div>
-            
             
         </div>
 
@@ -119,26 +141,6 @@
                             <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 80%"></div>
                         </div>
                     </div>
-                     <div class="border-l-2 border-blue-500 pl-4 py-1">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-white text-sm">Pernas</h4>
-                            <span class="text-xs text-slate-500">15 Dez</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mt-1">Agachamento: 75 kg • 5 exercícios</p>
-                        <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
-                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: 60%"></div>
-                        </div>
-                    </div>
-                    <div class="border-l-2 border-purple-500 pl-4 py-1">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-white text-sm">Costas e Bíceps</h4>
-                            <span class="text-xs text-slate-500">13 Dez</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mt-1">Barra Fixa: 70 kg • 7 exercícios</p>
-                        <div class="w-full bg-slate-700 h-1.5 rounded-full mt-2">
-                            <div class="bg-purple-500 h-1.5 rounded-full" style="width: 90%"></div>
-                        </div>
-                    </div>
                 </div>
                 
                 <button class="w-full mt-4 text-xs text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-700 p-2 rounded transition">
@@ -161,7 +163,6 @@
                     
                     <form id="editForm" class="space-y-4">
                         <input type="hidden" id="edit-id" name="id">
-
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Exercício</label>
                             <input type="text" id="edit-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 transition">
@@ -200,13 +201,9 @@
                         Cancelar
                     </button>
                 </div>
-                
             </div>
         </div>
     </div>
-
-
-    
 
 </main>
 
@@ -216,7 +213,52 @@
             $("<style>.ui-state-highlight { height: 80px; background-color: rgba(16, 185, 129, 0.1); border: 2px dashed #10b981; border-radius: 0.75rem; margin-bottom: 1rem; }</style>").appendTo("head");
 
             GetDataAtual();
-            GetExercises();
+            GetCurrentWorkout(); 
+            GetWeight();
+
+            $('#btn-next-workout').on('click', function() {
+                $(this).find('i').addClass('fa-spin');
+                
+                $.ajax({
+                    url: '/Home/NextWorkout', 
+                    type: 'POST',
+                    success: function(response) {
+                        if(response.success) {
+                            if(typeof notyf !== 'undefined') notyf.success("Treino alternado!");
+                            GetCurrentWorkout();
+                        } else {
+                            if(typeof notyf !== 'undefined') notyf.error(response.message);
+                        }
+                    },
+                    error: function() { if(typeof notyf !== 'undefined') notyf.error("Erro ao trocar treino."); },
+                    complete: function() { $('#btn-next-workout').find('i').removeClass('fa-spin'); }
+                });
+            });
+
+            $('#btn-finish-workout').on('click', async function() {
+                const confirmed = await showConfirm(
+                    "Concluir Treino?", 
+                    "Isso salvará o histórico e avançará para a próxima ficha.",
+                    "Sim, concluir",
+                    "emerald"
+                );
+
+                if (!confirmed) return;
+
+                $.ajax({
+                    url: '/Home/FinishWorkout', 
+                    type: 'POST',
+                    success: function(response) {
+                        if(response.success) {
+                            if(typeof notyf !== 'undefined') notyf.success("Treino concluído!");
+                            GetCurrentWorkout(); 
+                        } else {
+                            if(typeof notyf !== 'undefined') notyf.error(response.message);
+                        }
+                    },
+                    error: function() { if(typeof notyf !== 'undefined') notyf.error("Erro ao concluir."); }
+                });
+            });
 
             $('#addForm').on('submit', function(e) {
                 e.preventDefault();
@@ -226,7 +268,8 @@
                     reps: $('#reps-add').val(),
                     series: $('#series-add').val(),
                     rest: $('#rest-add').val(),
-                    obs: $('#obs-add').val()
+                    obs: $('#obs-add').val(),
+                    workoutId: $('#workoutId').text()
                 };
                 
                 $.ajax({
@@ -236,7 +279,7 @@
                     success: function(response) {
                         if (response.success) {
                             if(typeof notyf !== 'undefined') notyf.success(response.message);
-                            GetExercises(); 
+                            GetCurrentWorkout(); 
                             $('#addForm')[0].reset();
                         } else {
                             if(typeof notyf !== 'undefined') notyf.error(response.message);
@@ -291,7 +334,7 @@
                     success: function (response) {
                         if (response.success) {
                             closeModal();
-                            GetExercises();
+                            GetCurrentWorkout();
                             if(typeof notyf !== 'undefined') notyf.success(response.message);
                         } else {
                             if(typeof notyf !== 'undefined') notyf.error(response.message);
@@ -308,11 +351,7 @@
                 const id = btn.data('id');
                 const card = btn.closest('.animate-entry');
 
-                const confirmed = await showConfirm(
-                    "Excluir Exercício?", 
-                    "Você tem certeza que deseja remover este registro? Essa ação é irreversível."
-                );
-
+                const confirmed = await showConfirm("Excluir Exercício?", "Essa ação é irreversível.");
                 if (!confirmed) return;
 
                 card.css('pointer-events', 'none').addClass('opacity-50');
@@ -328,7 +367,7 @@
                                 let count = parseInt($('#totalExercises').text()) - 1;
                                 $('#totalExercises').text(count > 0 ? count : 0);
                             });
-                            @* if(typeof notyf !== 'undefined') notyf.success(response.message); *@
+                            if(typeof notyf !== 'undefined') notyf.success(response.message);
                         } else {
                             if(typeof notyf !== 'undefined') notyf.error(response.message);
                             card.css('pointer-events', '').removeClass('opacity-50');
@@ -344,17 +383,42 @@
             $('#btn-cancel-edit, #modalBackdrop').on('click', closeModal);
         });
 
-        function GetExercises() {
+        function GetCurrentWorkout() {
             $.ajax({
-                url: '/Home/GetExercises',
+                url: '/Home/GetCurrentWorkoutExercise',
                 type: 'GET',
                 success: function (response) {
-                    if (response.success) {
-                        $('#workoutList').empty();
-                        $('#totalExercises').text(response.data.length);
+                    if (response.success && response.data) {
+                        const workout = response.data;
+                        const exercises = workout.exercises;
 
-                        response.data.forEach(ex => {
-                            let dataAttributes = `data-id="${ex.id}"`; 
+                        $('#workoutLetter').text(workout.letter).removeClass('hidden');
+                        $('#workoutName').text(workout.workoutName);
+                        $('#workoutId').text(workout.workoutId);
+                        
+                        if(workout.description) {
+                            $('#workoutDesc').text(workout.description);
+                        } else {
+                            $('#workoutDesc').text('');
+                        }
+
+                        $('#workoutList').empty();
+                        $('#totalExercises').text(exercises.length);
+
+                        if (exercises.length === 0) {
+                            $('#workoutList').html('<p class="text-slate-500 text-center py-4">Nenhum exercício cadastrado neste treino.</p>');
+                            return;
+                        }
+
+                        exercises.forEach(ex => {
+                            let dataAttributes = `
+                                data-id="${ex.id}" 
+                                data-name="${ex.name}" 
+                                data-weight="${ex.weight}" 
+                                data-reps="${ex.reps}" 
+                                data-series="${ex.series}" 
+                                data-rest="${ex.rest}" 
+                                data-obs="${ex.obs || ''}"`;
 
                             let html = `
                                 <div class="workout-item animate-entry bg-slate-900/50 border border-slate-700 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group hover:border-emerald-500/30 transition mb-4" data-id="${ex.id}">
@@ -375,7 +439,8 @@
                                         <div>
                                             <h3 class="font-bold text-white text-lg">${ex.name}</h3>
                                             <p class="text-sm text-slate-400">
-                                                ${ex.series} séries • ${ex.reps} repetições
+                                                ${ex.series} séries • ${ex.reps} reps
+                                                ${ex.obs ? `<span class="text-xs text-slate-500 ml-1 italic border-l border-slate-600 pl-2">${ex.obs}</span>` : ''}
                                             </p>
                                         </div>
                                     </div>
@@ -400,8 +465,15 @@
 
                         InitSortable();
                     } else {
-                        if(typeof notyf !== 'undefined') notyf.error(response.message);
+                        $('#workoutName').text("Sem treino definido");
+                        $('#workoutLetter').addClass('hidden');
+                        $('#workoutDesc').text("Selecione ou crie um treino na aba 'Treinos'.");
+                        $('#workoutList').empty();
+                        $('#totalExercises').text('0');
                     }
+                },
+                error: function (xhr) {
+                    $('#workoutName').text("Erro ao carregar");
                 }
             });
         }
@@ -434,7 +506,7 @@
                 success: function (response) {
                     if (!response.success) {
                         if(typeof notyf !== 'undefined') notyf.error(response.message);
-                        GetExercises(); 
+                        GetCurrentWorkout(); 
                     }
                 },
                 error: function (xhr) { console.error(xhr.responseText); }
@@ -449,6 +521,20 @@
             const data = new Date();
             const options = { day: '2-digit', month: 'short', year: 'numeric' };
             $('#date').text(data.toLocaleDateString('pt-BR', options).replace('.',''));
+        }
+
+        function GetWeight() {
+            $.ajax({
+                url: '/Home/GetWeightGoal',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        $('#userWeight').text(response.data.weight + ' kg');
+                        $('#userWeightGoal').text(response.data.weightGoal + ' kg');
+                    }
+                }
+            });
         }
     </script>
 }

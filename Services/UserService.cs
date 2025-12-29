@@ -3,7 +3,6 @@ using FitTrack.Models;
 using FitTrack.Models.Resources;
 using FitTrack.Utils;
 using FitTrack.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
 
 namespace FitTrack.Services;
@@ -20,8 +19,6 @@ public class UserService : IUserService
     }
     public RetornoGenerico<UsersDTO> GetUserById(int id)
     {
-
-
         var user = _db.Users.Where(a => a.id == id).Select(a => new UsersDTO
         {
             id = a.id,
@@ -155,11 +152,21 @@ public class UserService : IUserService
         }
     }
 
-    
     public RetornoGenerico<weightGoalDTO> GetWeightGoalByUserId(int userId)
     {
-        return new RetornoGenerico<weightGoalDTO>  { success = true, message = "" };
-        
+        var goalWeight = _db.UserMetrics.Where(a => a.userId == userId).Select(a => new weightGoalDTO
+        {
+            weight = a.weight,
+            weightGoal = a.weightGoal,
+        }).FirstOrDefault();
+
+        if(goalWeight == null) return new RetornoGenerico<weightGoalDTO>{success = false, message = "Meta não definida"};
+
+        goalWeight.difference = goalWeight.weightGoal - goalWeight.weight; 
+
+        goalWeight.loseWeigth = goalWeight.difference <= 0;
+
+        return new RetornoGenerico<weightGoalDTO>{success = true, message = "", data = goalWeight};
     }
 
 }

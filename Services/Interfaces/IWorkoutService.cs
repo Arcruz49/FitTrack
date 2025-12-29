@@ -9,4 +9,5 @@ public interface IWorkoutService
     Retorno DeleteWorkout(int userId, int id);
     RetornoGenerico<WorkoutDTO> GetWorkoutById(int userId, int id);
     Retorno EditWorkout(int userId, WorkoutDTO workout);
+    RetornoGenerico<WorkoutExerciseDTO> GetCurrentWorkoutExercise(int userId);
 }

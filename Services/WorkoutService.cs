@@ -53,7 +53,7 @@ public class WorkoutService : IWorkoutService
         if (nextLetter == "")
             return new Retorno{success = true, message = "Limite máximo de treinos atingidos"};
 
-        var workout = new UserWorkout()
+        var workout = new UserWorkouts()
         {
             userId = userId,
             name = name,
@@ -131,5 +131,35 @@ public class WorkoutService : IWorkoutService
         return new Retorno{success = true};
     }
 
+    public RetornoGenerico<WorkoutExerciseDTO> GetCurrentWorkoutExercise(int userId)
+    {
+
+        var workoutExercises = _db.UserWorkouts.Where(a => a.userId == userId).OrderBy(a => a.letter).Select(a => new WorkoutExerciseDTO
+        {
+            workoutId = a.id,
+            letter = a.letter,
+            workoutName = a.name,
+            description = a.description,
+
+        }).FirstOrDefault();
+
+        if(workoutExercises == null) return new RetornoGenerico<WorkoutExerciseDTO>{ success = false, message = "Treino não encontrado" };
+
+        workoutExercises.exercises  = _db.Exercises.Where(a => a.userId == userId && a.workoutId == workoutExercises.workoutId)
+        .OrderBy(a => a.order).Select(a => new ExerciseDTO
+        {
+            id = a.id,
+            name = a.name ?? "",
+            weight = a.weight,
+            reps = a.reps,
+            series = a.series,
+            rest = a.rest,
+            obs = a.obs ?? "",
+            order = a.order,
+        }).ToList();
+
+
+        return new RetornoGenerico<WorkoutExerciseDTO>{success = true, data = workoutExercises};
+    }
 
 }

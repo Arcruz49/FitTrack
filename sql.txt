@@ -31,8 +31,7 @@ CREATE TABLE IF NOT EXISTS Users (
     CONSTRAINT fk_users_profiles
         FOREIGN KEY (profileId)
         REFERENCES Profiles(id)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS Exercises (
@@ -49,8 +48,7 @@ CREATE TABLE IF NOT EXISTS Exercises (
     CONSTRAINT fk_exercises_users
         FOREIGN KEY (userId)
         REFERENCES Users(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE Users
@@ -72,8 +70,7 @@ CREATE TABLE IF NOT EXISTS UserMetrics (
     CONSTRAINT fk_usermetrics_users
         FOREIGN KEY (userId)
         REFERENCES Users(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE Users
@@ -85,6 +82,9 @@ CREATE TABLE IF NOT EXISTS UserWorkouts (
     letter CHAR(2),
     name VARCHAR(255),
     description VARCHAR(500),
+    CONSTRAINT fk_workout_users
+        FOREIGN KEY (userId)
+        REFERENCES Users(id)
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -98,21 +98,53 @@ SET @fk_exists := (
       AND TABLE_NAME = 'Exercises'
       AND CONSTRAINT_NAME = 'FK_Exercises_UserWorkouts'
 );
+INSERT INTO Exercises
+(userId, name, weight, reps, series, rest, obs, `order`, creation_date, workoutId)
+VALUES
+(6, 'Supino Reto', 80, 10, 4, 90, 'Controle na descida', 1, NOW(), 14),
+
+(6, 'Supino Inclinado', 70, 10, 3, 90, NULL, 2, NOW(), 14),
+
+(6, 'Crucifixo', 20, 12, 3, 60, 'Amplitude máxima', 3, NOW(), 14),
+
+(6, 'Tríceps Corda', 35, 12, 3, 60, 'Sem roubar', 4, NOW(), 14),
+
+(6, 'Tríceps Testa', 30, 10, 3, 75, NULL, 5, NOW(), 14);
 
 SET @sql := IF(
     @fk_exists = 0,
     'ALTER TABLE Exercises
      ADD CONSTRAINT FK_Exercises_UserWorkouts
      FOREIGN KEY (workoutId)
-     REFERENCES UserWorkouts(id)
-     ON DELETE CASCADE
-     ON UPDATE CASCADE',
+     REFERENCES UserWorkouts(id),
     'SELECT 1'
 );
 
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
+CREATE TABLE IF NOT EXISTS UserWorkoutsSessions
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    UserWorkoutId INT NOT NULL,
+    letter CHAR(2),
+    name VARCHAR(255),
+    description VARCHAR(500),
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_workout_sessions_users
+        FOREIGN KEY (userId)
+        REFERENCES Users(id),
+
+    CONSTRAINT fk_workout_sessions_user_workouts
+        FOREIGN KEY (UserWorkoutId)
+        REFERENCES UserWorkouts(id)
+) ENGINE=InnoDB 
+  DEFAULT CHARSET=utf8mb4 
+  COLLATE=utf8mb4_unicode_ci;
+
 
 CREATE INDEX IF NOT EXISTS idx_users_profileId ON Users(profileId);
 CREATE INDEX IF NOT EXISTS idx_users_email ON Users(email);

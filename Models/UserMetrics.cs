@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitTrack.Models
 {
@@ -16,7 +17,8 @@ namespace FitTrack.Models
         public decimal weightGoal { get; set; }
         public int workoutsGoal { get; set; }
 
-        public Users? user { get; set; }
+        [ForeignKey("userId")]
+        public Users User { get; set; }
 
     }
 }

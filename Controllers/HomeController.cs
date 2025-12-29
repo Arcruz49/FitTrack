@@ -12,11 +12,15 @@ public class HomeController : BaseController
 {
     
     private readonly IExerciseService _exerciseService;
+    private readonly IWorkoutService _workoutService;
+    private readonly IUserService _userService;
     private readonly Util _util;
 
-    public HomeController(IExerciseService homeService, Util util)
+    public HomeController(IExerciseService homeService, IUserService userService, IWorkoutService workoutService, Util util)
     {
         _exerciseService = homeService;
+        _userService = userService;
+        _workoutService = workoutService;
         _util = util;
     }
 
@@ -130,6 +134,28 @@ public class HomeController : BaseController
         if(!exerciseOrderResult.success) return Json(new { success = false, message = exerciseOrderResult.message});
 
         return Json(new { success = true, message = "Ordem atualizada com sucesso" });
+    }
+
+    [Authorize]
+    [HttpGet]
+    public JsonResult GetWeightGoal()
+    {
+        var weightGoalResult = _userService.GetWeightGoalByUserId(UserId);
+
+        if(!weightGoalResult.success) return Json(new { success = false, message = weightGoalResult.message});
+
+        return Json(new { success = true, message = "", data = weightGoalResult.data}); 
+    }
+
+    [Authorize]
+    [HttpGet]
+    public JsonResult GetCurrentWorkoutExercise()
+    {
+        var workoutExercise = _workoutService.GetCurrentWorkoutExercise(UserId);
+
+        if(!workoutExercise.success) return Json(new { success = false, message = workoutExercise.message});
+
+        return Json(new { success = true, message = "", data = workoutExercise.data}); 
     }
 
 }

@@ -11,7 +11,7 @@ namespace FitTrack.Data
         public DbSet<Profiles> Profiles { get; set; }
         public DbSet<Exercises> Exercises { get; set; }
         public DbSet<UserMetrics> UserMetrics { get; set; }
-        public DbSet<UserWorkout> UserWorkouts { get; set; }
+        public DbSet<UserWorkouts> UserWorkouts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace FitTrack.Data
             modelBuilder.Entity<Exercises>()
                 .Property(u => u.creation_date)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            modelBuilder.Entity<UserWorkout>()
+            modelBuilder.Entity<UserWorkouts>()
                 .Property(u => u.creation_date)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
         }
