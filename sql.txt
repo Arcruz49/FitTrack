@@ -146,6 +146,32 @@ CREATE TABLE IF NOT EXISTS UserWorkoutsSessions
   COLLATE=utf8mb4_unicode_ci;
 
 
+CREATE TABLE IF NOT EXISTS UserMetricsHistory (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userMetricsId INT,
+    userId INT,
+    weight DECIMAL(5,2),
+    height DECIMAL(5,2),
+    bodyFat DECIMAL(5,2),
+    armCircumference DECIMAL(5,2),
+    chestCircumference DECIMAL(5,2),
+    waistCircumference DECIMAL(5,2),
+    legCircumference DECIMAL(5,2),
+    weightGoal DECIMAL(5,2),
+    workoutsGoal INT,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_usermetricshistory_users
+        FOREIGN KEY (userId)
+        REFERENCES Users(id),
+    CONSTRAINT fk_usermetricshistory_usermetrics
+        FOREIGN KEY (userMetricsId)
+        REFERENCES UserMetrics(id)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+
 CREATE INDEX IF NOT EXISTS idx_users_profileId ON Users(profileId);
 CREATE INDEX IF NOT EXISTS idx_users_email ON Users(email);
 CREATE INDEX IF NOT EXISTS idx_exercises_userId ON Exercises(userId);

@@ -6,4 +6,5 @@ public class weightGoalDTO
     public decimal weightGoal { get; set; }
     public decimal difference { get; set; }
     public bool loseWeigth { get; set; }
+    public bool completed { get; set; }
 }

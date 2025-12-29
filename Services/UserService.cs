@@ -54,6 +54,7 @@ public class UserService : IUserService
     {
         var user = _db.Users.Where(a => a.id == userId).FirstOrDefault();
         var userMetrics = _db.UserMetrics.Where(a => a.userId == userId).FirstOrDefault();
+        Retorno saveUserMetricsHistory = new Retorno();
 
         if(user == null) return new Retorno{success = false, message = "Usuário não identificado"};
 
@@ -83,6 +84,7 @@ public class UserService : IUserService
         }
         else
         {
+            saveUserMetricsHistory = SaveUserMetricsHistory(userMetrics);
             userMetrics.weight = ProfileInfo.weight;
             userMetrics.height = ProfileInfo.height;
             userMetrics.bodyFat = ProfileInfo.bodyFat;
@@ -167,6 +169,36 @@ public class UserService : IUserService
         goalWeight.loseWeigth = goalWeight.difference <= 0;
 
         return new RetornoGenerico<weightGoalDTO>{success = true, message = "", data = goalWeight};
+    }
+
+    private Retorno SaveUserMetricsHistory(UserMetrics userMetrics)
+    {
+        var userMetricsHistory = new UserMetricsHistory
+        {
+            userMetricsId = userMetrics.id,
+            userId = userMetrics.userId,
+            weight = userMetrics.weight,
+            height = userMetrics.height,
+            bodyFat = userMetrics.bodyFat,
+            armCircumference = userMetrics.armCircumference,
+            chestCircumference = userMetrics.chestCircumference,
+            waistCircumference = userMetrics.waistCircumference,
+            legCircumference = userMetrics.legCircumference,
+            weightGoal = userMetrics.weightGoal,
+            workoutsGoal = userMetrics.workoutsGoal
+        };
+
+        try
+        {
+            _db.UserMetricsHistory.Add(userMetricsHistory);
+            _db.SaveChanges();
+            return new Retorno{success = true};
+
+        }
+        catch(Exception ex)
+        {
+            return new Retorno{success = false, message = ex.Message};
+        }
     }
 
 }

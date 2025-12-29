@@ -10,16 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Acesso - FitTrack</title>
     
-    <!-- Google Fonts -->
     <link href="~/lib/google-fonts/googleFonts.css" rel="stylesheet">
-    
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- jQuery -->
+    <link href="~/lib/notyf/notyf.min.css" rel="stylesheet">
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    
-    <!-- Tailwind CSS -->
     <script src="~/lib/tailwind/tailwind-3.4.17.js"></script>
 
     <script>
@@ -167,11 +161,14 @@
 
     </div>
 
+    <script src="~/lib/notyf/notyf.min.js"></script>
+
     <script>
-
-
-
         $(document).ready(function() {
+
+            const notyf = new Notyf();
+
+
             $('#btn-go-register').click(function(e) {
                 e.preventDefault();
                 $('#login-container').fadeOut(300, function() {
@@ -210,11 +207,11 @@
                                 $('#login-container').fadeIn(300);
                             });
                         } else {
-                            alert(response.message); // mostrar erro
+                            notyf.error(response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        alert('Ocorreu um erro ao registrar: ' + error);
+                        notyf.error('Ocorreu um erro ao registrar: ' + error);
                     }
                 });
             });
@@ -239,11 +236,11 @@
                                 $('#login-container').fadeIn(300);
                             });
                         } else {
-                            alert(response.message);
+                            notyf.error(response.message);
                         }
                     },
                     error: function(xhr, status, error) {
-                        alert('Ocorreu um erro ao registrar: ' + error);
+                        notyf.error('Ocorreu um erro ao registrar: ' + error);
                     }
                 });
             });
